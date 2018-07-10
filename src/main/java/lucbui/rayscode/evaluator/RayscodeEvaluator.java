@@ -1,6 +1,7 @@
-package lucbui.rayscode.token;
+package lucbui.rayscode.evaluator;
 
 import lucbui.rayscode.evaluator.Common;
+import lucbui.rayscode.token.RayscodeFunction;
 
 import java.math.BigInteger;
 import java.util.Deque;

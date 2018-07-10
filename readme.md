@@ -18,7 +18,7 @@ simpler.
 In rayscode, the raysFox marks the end of certain snippets. It basically combines the semicolon and the right
 parenthesis all in one symbol.
 
-### Arbitrary memory must be readable/writeable
+### Basic Functions
 All variables and methods must be prefixed with "rays".
 rays2 and rays3 make the only two literal numbers. Methods and combinations are called via postfix notation.
 Standard operators:
@@ -26,6 +26,7 @@ Standard operators:
 * Subtraction: raysI
 * Multiplication: raysB
 * Division: raysA
+
 Example:
 ```
 raysFour rays2 rays2 raysP raysFox => var four = 2 + 2.
@@ -56,7 +57,7 @@ function method(one, two){
 Methods and variables are helpful functions for you, the programmer, as are the presence of multiplication and division
 operators. If you want, see if you can strip down your code to use only valid raysfire emotes!
 
-### If/else constructs must exist
+### If/Else
 Conditional operator: variable (optional), followed by two methods, followed by raysShrug, an arbitrary number of parameters, and a raysFox
 Variable evaluates. If <= 0, calls the first method. If > 0, calls the second method.
 Example:
