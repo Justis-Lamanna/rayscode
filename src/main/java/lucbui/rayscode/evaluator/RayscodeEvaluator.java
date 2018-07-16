@@ -1,6 +1,5 @@
 package lucbui.rayscode.evaluator;
 
-import lucbui.rayscode.evaluator.Common;
 import lucbui.rayscode.token.RayscodeFunction;
 
 import java.math.BigInteger;
@@ -21,7 +20,7 @@ public class RayscodeEvaluator {
         Deque<BigInteger> stack = new LinkedList<>();
         for(RayscodeFunction function : code){
             BigInteger[] parameters = getArgumentsFromStack(stack, function.getNumberOfArguments());
-            BigInteger[] returns = function.execute(parameters);
+            BigInteger[] returns = function.execute(stack, parameters);
             addReturnsToStack(stack, function.getNumberOfReturns(), returns);
         }
         return getArgumentsFromStack(stack, stack.size());
@@ -35,7 +34,7 @@ public class RayscodeEvaluator {
      */
     private BigInteger[] getArgumentsFromStack(Deque<BigInteger> stack, int numberOfMembers){
         return Stream.iterate(0, i -> i + 1)
-                .limit(numberOfMembers)
+                .limit(numberOfMembers < 0 ? stack.size() : numberOfMembers)
                 .map(i -> stack.removeFirst())
                 .toArray(size -> Common.createArray(BigInteger.class, size));
     }
@@ -48,7 +47,7 @@ public class RayscodeEvaluator {
      */
     private void addReturnsToStack(Deque<BigInteger> stack, int numberOfMembers, BigInteger[] members){
         Stream.iterate(0, i -> i + 1)
-                .limit(numberOfMembers)
+                .limit(numberOfMembers < 0 ? members.length : numberOfMembers)
                 .forEach(i ->  stack.addFirst(Common.getOrDefault(members, i)));
     }
 }

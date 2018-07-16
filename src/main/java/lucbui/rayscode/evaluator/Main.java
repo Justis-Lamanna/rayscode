@@ -1,12 +1,11 @@
 package lucbui.rayscode.evaluator;
 
-import static lucbui.rayscode.token.RayscodeBinOp.*;
-
 import lucbui.rayscode.token.RayscodeFunction;
-import static lucbui.rayscode.token.RayscodeLiteral.*;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static lucbui.rayscode.token.Rayscode.*;
 
 /**
  * A testing ground for current features.
@@ -15,7 +14,7 @@ public class Main {
 
     public static void main(String... args) {
         RayscodeEvaluator eval = new RayscodeEvaluator();
-        List<RayscodeFunction> code = Arrays.asList(TWO, TWO, THREE, ADD, MULTIPLY);
-        System.out.println(code.toString() + "=" + Arrays.toString(eval.evaluate(code)));  //prints: [TWO, TWO, THREE, ADD, MULTIPLY]=[10]
+        List<RayscodeFunction> code = Arrays.asList(infinity(), input(), infinity(), output()); //Prints the input backwards
+        System.out.println(code.toString() + "=" + Arrays.toString(eval.evaluate(code)));
     }
 }
