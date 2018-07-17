@@ -8,28 +8,12 @@ import java.util.Deque;
  */
 public interface RayscodeFunction {
 
-    public static final BigInteger NULL = null;
-
-    /**
-     * Get the number of arguments required by the function.
-     * If this value returns a negative number, the entire stack is provided.
-     * @return the number of arguments required by the function
-     */
-    int getNumberOfArguments();
-
-    /**
-     * Get the number of values returned by the function
-     * If this value returns a negative number, the entire stack is returned.
-     * @return the number of values returned by the function
-     */
-    int getNumberOfReturns();
-
     /**
      * Execute the functional logic.
-     * @param arguments The arguments pulled in from the stack
+     * @param stack The stack to manipulate
      * @return The return values
      */
-    BigInteger[] execute(Deque<BigInteger> stack, BigInteger[] arguments);
+    void execute(Deque<BigInteger> stack);
 
 
 }

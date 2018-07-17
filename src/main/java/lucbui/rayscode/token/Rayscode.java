@@ -1,13 +1,16 @@
 package lucbui.rayscode.token;
 
-import lucbui.rayscode.evaluator.Common;
-
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Deque;
+import java.util.Objects;
+import java.util.Scanner;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 public class Rayscode {
+
+    public static final BigInteger INFINITY = null;
+
     private Rayscode(){
         //Static methods only please.
     }
@@ -74,38 +77,20 @@ public class Rayscode {
          * The literal to return.
          * We store it as a BigInteger array so conversion does not need to occur each time.
          */
-        private BigInteger[] literal;
+        private BigInteger literal;
 
         RayscodeLiteral(Integer literal) {
-            this.literal = Common.varargsToArray( Objects.isNull(literal) ? null : BigInteger.valueOf(literal));
-        }
-
-        /**
-         * Being a literal, no arguments are necessary
-         * @return 0
-         */
-        @Override
-        public int getNumberOfArguments() {
-            return 0;
-        }
-
-        /**
-         * Being a literal, only one return value is used
-         * @return 1
-         */
-        @Override
-        public int getNumberOfReturns() {
-            return 1;
+            this.literal = Objects.isNull(literal) ? Rayscode.INFINITY : BigInteger.valueOf(literal);
         }
 
         /**
          *
-         * @param arguments The arguments pulled in from the stack
+         * @param stack The stack
          * @return The literal value.
          */
         @Override
-        public BigInteger[] execute(Deque<BigInteger> stack, BigInteger[] arguments) {
-            return literal;
+        public void execute(Deque<BigInteger> stack) {
+            stack.push(literal);
         }
     }
 
@@ -142,32 +127,13 @@ public class Rayscode {
         }
 
         /**
-         * Being a BinOp, two arguments are always needed.
-         * @return 2
-         */
-        @Override
-        public int getNumberOfArguments() {
-            return 2;
-        }
-
-        /**
-         * Being a BinOp, one return value is always returned
-         * @return 1
-         */
-        @Override
-        public int getNumberOfReturns() {
-            return 1;
-        }
-
-        /**
          * Executes the operation on the two values.
-         * @param arguments The arguments pulled in from the stack
+         * @param stack The stack
          * @return The BinOp result.
          */
         @Override
-        public BigInteger[] execute(Deque<BigInteger> stack, BigInteger[] arguments) {
-            Common.requireNoInfiniteArgument(arguments);
-            return Common.varargsToArray(operator.apply(arguments[0], arguments[1]));
+        public void execute(Deque<BigInteger> stack) {
+            operator.apply(stack.pop(), stack.pop());
         }
     }
 
@@ -175,53 +141,30 @@ public class Rayscode {
 
         INPUT(){
             @Override
-            public BigInteger[] execute(Deque<BigInteger> stack, BigInteger[] arguments) {
-                BigInteger numberOfCharactersToRead = arguments[0];
+            public void execute(Deque<BigInteger> stack) {
+                BigInteger numberOfCharactersToRead = stack.pop();
 
                 Scanner inputScanner = new Scanner(System.in);
                 String s = inputScanner.nextLine();
                 inputScanner.close();
 
-                return Stream.iterate(0, i -> i + 1)
-                        .limit(numberOfCharactersToRead == null ? s.length() : numberOfCharactersToRead.longValueExact())
+                Stream.iterate(0, i -> i + 1)
+                        .limit(numberOfCharactersToRead == INFINITY ? s.length() : numberOfCharactersToRead.longValueExact())
                         .map(i -> BigInteger.valueOf(i < s.length() ? s.charAt(i) : 0))
-                        .toArray(BigInteger[]::new);
+                        .forEach(stack::push);
             }
         },
         OUTPUT(){
             @Override
-            public BigInteger[] execute(Deque<BigInteger> stack, BigInteger[] arguments) {
-                BigInteger numberOfCharactersToRead = arguments[0];
-                List<BigInteger> stackList = new ArrayList<>(stack);
+            public void execute(Deque<BigInteger> stack) {
+                BigInteger numberOfCharactersToRead = stack.pop();
 
-                BigInteger[] returns = Stream.iterate(0, i -> i + 1)
+                Stream.iterate(0, i -> i + 1)
                         .limit(numberOfCharactersToRead == null ? stack.size() : numberOfCharactersToRead.longValueExact())
-                        .map(i -> {
-                            System.out.print((char)stackList.get(i).intValueExact());
-                            return stackList.get(i);
-                        })
-                        .toArray(BigInteger[]::new);
+                        .forEach(i -> System.out.print((char)stack.pop().intValueExact()));
                 System.out.println();
-                return returns;
             }
         };
 
-        /**
-         * Being a BinOp, two arguments are always needed.
-         * @return 2
-         */
-        @Override
-        public int getNumberOfArguments() {
-            return 1;
-        }
-
-        /**
-         * Being a BinOp, one return value is always returned
-         * @return 1
-         */
-        @Override
-        public int getNumberOfReturns() {
-            return -1;
-        }
     }
 }

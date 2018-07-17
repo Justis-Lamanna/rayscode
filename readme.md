@@ -32,27 +32,7 @@ Example:
 raysFour rays2 rays2 raysP raysFox => var four = 2 + 2.
 ```
 
-Method declarations start with raysH, followed by the name, and arguments. Ends with raysZ and the return values.
-Example:
-```
-raysH raysMethod raysOne raysTwo
-raysZ raysOne raysTwo raysP raysFox
-=>
-function method(one, two){
-    return one + two;
-}
-```
-
-Multiple returns are permissible. Separate by raysFox. Order of return is preserved.
-Example:
-```
-raysH raysMethod raysOne raysTwo
-raysZ raysOne raysTwo raysP raysFox raysTwo raysOne raysI raysFox
-=>
-function method(one, two){
-    return one + two, two - one;
-}
-```
+Method declarations start with raysH, followed by the name, and number of arguments. Ends with raysZ.
 
 Methods and variables are helpful functions for you, the programmer, as are the presence of multiplication and division
 operators. If you want, see if you can strip down your code to use only valid raysfire emotes!
@@ -74,6 +54,8 @@ raysThree raysQ
 //prints three chars at the top of the stack
 ```
 
+Note: Reading followed by writing will *swap* the string! 
+
 ### Infinity
 rays3c marks a special character, called the infinity character. This could be considered analogous to a null in a
 standard programming language, although takes on additional roles in rayscode. In the case of I/O, this marks that
@@ -85,27 +67,38 @@ rays3c raysT
 //retrieves every character typed, and places on the stack
 ```
 
-### If/Else
-Conditional operator: variable, followed by two methods, followed by raysShrug, an arbitrary number of parameters, and a raysFox
-Variable evaluates. If <= 0, calls the first method. If > 0, calls the second method.
+### If/Else (NE)
+Conditional operator: variable, followed by raysShrug, followed by an expression, a raysFox, another expression, 
+and another raysfox. Variable evaluates. If <= 0, the first expression evaluates, otherwise, the second does.
 Example:
 ```
-raysTest raysNegative raysPositive raysShrug raysThree raysTwo raysOne raysFox
+rays3 rays3 raysI raysShrug rays3 rays3 raysI raysFox rays3 rays2 raysI raysFox
 =>
-if(test <= 0){
-    negative(one, two, three);
+if((3-3) <= 0){
+    3 - 3;
 } else {
-    positive(one, two, three);
+    3 - 2;
 }
 ```
 
-### Grouping
-~~raysC => Functions like a (. Allows you to easily stack evaluations. raysFox functions as the ).
-Example:~~ 
+### Looping (NE)
+raysC - Marks the loop point.
+raysLurk - Go to the loop point.
+Example:
+```
+rays3 raysC raysShrug rays3 rays2 raysI raysFox rays3 rays2 raysI raysI raysD raysFox
+=>
+var = 3;
+loop:
+if(var <= 0){
+    1;
+else {
+    var = var - 1;
+    goto loop
+}
+```
 
-Grouping has been deprecated, as it is unnecessary in a stack-based language.
-
-### Swapping
+### Swapping (NE)
 raysShock - Swaps some number of elements in the stack. Pass infinite to swap the entire stack.
 Example:
 ```
@@ -114,13 +107,22 @@ rays2 rays2 rays3 rays3 rays3c raysShock
 //rays3 rays3 rays2 rays2
 ```
 
-### Duplicating
-raysC - Duplicates some number of elements in the stack. Pass infinite to duplicate the entire stack.
+### Duplicating (NE)
+raysE - Duplicates some number of elements in the stack. Pass infinite to duplicate the entire stack.
 Example:
 ```
 rays2 rays3 rays3c raysC
 =>
 //rays3 rays2
+```
+
+### Pop (NE)
+raysD - Consumes a member of the stack.
+Example:
+```
+rays2 rays3 rays2 raysD
+=>
+rays2 rays3
 ```
 
 ### Reserved Words
@@ -130,16 +132,16 @@ rays3 - Literal integer 3
 rays3c - Literal integer infinity
 raysA - Integer division
 raysB - Multiplication
-raysC
-raysD
-raysE
+raysC - Marks start of loop
+raysD - Pop
+raysE - Duplicate stack
 raysFox - Semicolon, and other marker
 raysH - Marks the beginning of method declaration
 raysI - Subtraction
 raysL
 raysLick
 raysLove
-raysLurk
+raysLurk - Marks end of loop
 raysP - Addition
 raysQ - Print output
 raysShock - Swap
