@@ -127,26 +127,27 @@ rays2 rays3
 
 ### Reserved Words
 All fox emotes are reserved for future use. All non-fox emotes are reserved for potential future use.
-rays2 - Literal integer 2
-rays3 - Literal integer 3
-rays3c - Literal integer infinity
-raysA - Integer division
-raysB - Multiplication
-raysC - Marks start of loop
-raysD - Pop
-raysE - Duplicate stack
-raysFox - Semicolon, and other marker
-raysH - Marks the beginning of method declaration
-raysI - Subtraction
-raysL
-raysLick
-raysLove
-raysLurk - Marks end of loop
-raysP - Addition
-raysQ - Print output
-raysShock - Swap
-raysShrug - Conditional operator
-raysShy
-raysT - Accept input
-raysThump
+
+rays2 - Literal integer 2  
+rays3 - Literal integer 3  
+rays3c - Literal integer infinity  
+raysA - Integer division  
+raysB - Multiplication  
+raysC - Marks start of loop  
+raysD - Pop  
+raysE - Duplicate stack  
+raysFox - Semicolon, and other marker  
+raysH - Marks the beginning of method declaration  
+raysI - Subtraction  
+raysL  
+raysLick  
+raysLove  
+raysLurk - Marks end of loop  
+raysP - Addition  
+raysQ - Print output  
+raysShock - Swap  
+raysShrug - Conditional operator  
+raysShy  
+raysT - Accept input  
+raysThump  
 raysZ - Marks the end of method declaration
