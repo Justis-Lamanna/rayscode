@@ -125,6 +125,15 @@ rays2 rays3 rays2 raysD
 rays2 rays3
 ```
 
+### Roll (NE)
+raysThump - Rolls the stack some number of times.
+Example:
+```
+rays2 rays2 rays3 rays3 rays3 rays2 raysI raysThump
+=>
+roll(1) //rays3 rays2 rays2 rays3
+```
+
 ### Reserved Words
 All fox emotes are reserved for future use. All non-fox emotes are reserved for potential future use.
 
@@ -149,5 +158,5 @@ raysShock - Swap
 raysShrug - Conditional operator  
 raysShy  
 raysT - Accept input  
-raysThump  
+raysThump - Roll
 raysZ - Marks the end of method declaration
