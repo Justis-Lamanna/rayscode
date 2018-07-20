@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String... args) {
         RayscodeEvaluator eval = new RayscodeEvaluator();
-        List<RayscodeFunction> code = Arrays.asList(INFINITY, INPUT, INFINITY, OUTPUT); //Prints the input backwards
+        List<RayscodeFunction> code = Arrays.asList(INPUT, SIZE, ROLL); //length of input + input
         System.out.println(code.toString() + "=" + eval.evaluate(code));
     }
 }

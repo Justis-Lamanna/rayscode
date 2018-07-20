@@ -36,12 +36,12 @@ public enum Rayscode implements RayscodeFunction {
         }
     },
     /**
-     * A literal infinity, which is also treated as null.
+     * Get the current stack size.
      */
-    INFINITY() {
+    SIZE() {
         @Override
         public void execute(Deque<BigInteger> stack) {
-            stack.push(null);
+            stack.push(BigInteger.valueOf(stack.size()));
         }
     },
     /**
@@ -86,14 +86,13 @@ public enum Rayscode implements RayscodeFunction {
     INPUT() {
         @Override
         public void execute(Deque<BigInteger> stack) {
-            BigInteger numberOfCharactersToRead = stack.pop();
+            System.out.print(">> ");
 
             Scanner inputScanner = new Scanner(System.in);
             String s = inputScanner.nextLine();
             inputScanner.close();
 
-            Stream.iterate(0, i -> i + 1)
-                    .limit(numberOfCharactersToRead == null ? s.length() : numberOfCharactersToRead.longValueExact())
+            iterate(s.length())
                     .map(i -> BigInteger.valueOf(i < s.length() ? s.charAt(i) : 0))
                     .forEach(stack::push);
         }
@@ -105,13 +104,50 @@ public enum Rayscode implements RayscodeFunction {
     OUTPUT() {
         @Override
         public void execute(Deque<BigInteger> stack) {
-            BigInteger numberOfCharactersToRead = stack.pop();
-
-            Stream.iterate(0, i -> i + 1)
-                    .limit(numberOfCharactersToRead == null ? stack.size() : numberOfCharactersToRead.longValueExact())
+            iterate(stack.size())
                     .forEach(i -> System.out.print((char) stack.pop().intValueExact()));
             System.out.println();
 
         }
+    },
+    /**
+     * An operator which swaps a number of elements on the stack.
+     */
+    SWAP() {
+        @Override
+        public void execute(Deque<BigInteger> stack) {
+            BigInteger first = stack.pop();
+            BigInteger second = stack.pop();
+            stack.push(first);
+            stack.push(second);
+        }
+    },
+    /**
+     * A pop operator, which removes the first element from the stack.
+     */
+    POP(){
+        @Override
+        public void execute(Deque<BigInteger> stack) {
+            stack.pop();
+        }
+    },
+    DUPLICATE(){
+        @Override
+        public void execute(Deque<BigInteger> stack) {
+            BigInteger toDuplicate = stack.pop();
+            stack.push(toDuplicate);
+            stack.push(toDuplicate);
+        }
+    },
+    ROLL(){
+        @Override
+        public void execute(Deque<BigInteger> stack) {
+            stack.addLast(stack.pop());
+        }
+    };
+
+    private static Stream<Integer> iterate(int stackSize){
+        return Stream.iterate(0, i -> i + 1)
+                .limit(stackSize);
     }
 }

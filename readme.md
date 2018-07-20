@@ -56,15 +56,13 @@ raysThree raysQ
 
 Note: Reading followed by writing will *swap* the string! 
 
-### Infinity
-rays3c marks a special character, called the infinity character. This could be considered analogous to a null in a
-standard programming language, although takes on additional roles in rayscode. In the case of I/O, this marks that
-all characters should be read from input, or the whole stack should be read to output.
+### Size
+rays3c marks the size character, which is the length of the stack at the time of evaluation.
 
 ```
-rays3c raysT
+rays3 rays2 rays2 rays2 rays2 rays3c
 =>
-//retrieves every character typed, and places on the stack
+//3, 2, 2, 2, 2, 5
 ```
 
 ### If/Else (NE)
@@ -98,26 +96,35 @@ else {
 }
 ```
 
-### Swapping (NE)
-raysShock - Swaps some number of elements in the stack. Pass infinite to swap the entire stack.
-Example:
+### Assignment (NE)
+raysLove - Binds a value to a variable. (Wimp Mode)
 ```
-rays2 rays2 rays3 rays3 rays3c raysShock
+rays3 rays2 raysI raysOne raysLove
 =>
-//rays3 rays3 rays2 rays2
+raysOne = 3 - 2;
 ```
 
-### Duplicating (NE)
-raysE - Duplicates some number of elements in the stack. Pass infinite to duplicate the entire stack.
+### Swapping
+raysShock - Swaps the last two elements in the stack
 Example:
 ```
-rays2 rays3 rays3c raysC
+rays2 rays3 rays3 rays2 raysShock
 =>
-//rays3 rays2
+//rays2 rays3 rays2 rays3
 ```
 
-### Pop (NE)
-raysD - Consumes a member of the stack.
+### Duplicating
+raysE - Duplicates the last element in the stack
+Example:
+```
+
+rays2 rays3 raysE
+=>
+//rays2 rays3 rays3
+```
+
+### Pop 
+raysD - Consumes one element from the stack.
 Example:
 ```
 rays2 rays3 rays2 raysD
@@ -125,11 +132,11 @@ rays2 rays3 rays2 raysD
 rays2 rays3
 ```
 
-### Roll (NE)
-raysThump - Rolls the stack some number of times.
+### Roll
+raysThump - Moves the top-most element to the bottom of the stack.
 Example:
 ```
-rays2 rays2 rays3 rays3 rays3 rays2 raysI raysThump
+rays2 rays2 rays3 rays3 raysThump
 =>
 roll(1) //rays3 rays2 rays2 rays3
 ```
@@ -139,7 +146,7 @@ All fox emotes are reserved for future use. All non-fox emotes are reserved for 
 
 rays2 - Literal integer 2  
 rays3 - Literal integer 3  
-rays3c - Literal integer infinity  
+rays3c - Stack size
 raysA - Integer division  
 raysB - Multiplication  
 raysC - Marks start of loop  
@@ -150,7 +157,7 @@ raysH - Marks the beginning of method declaration
 raysI - Subtraction  
 raysL  
 raysLick  
-raysLove  
+raysLove - Assignment  
 raysLurk - Marks end of loop  
 raysP - Addition  
 raysQ - Print output  
