@@ -65,9 +65,9 @@ rays3 rays2 rays2 rays2 rays2 rays3c
 //3, 2, 2, 2, 2, 5
 ```
 
-### If/Else (NE)
+### If/Else
 Conditional operator: variable, followed by raysShrug, followed by an expression, a raysFox, another expression, 
-and another raysfox. Variable evaluates. If <= 0, the first expression evaluates, otherwise, the second does.
+and another raysfox. Variable evaluates. If <= 0, or stack is empty, the first expression evaluates, otherwise, the second does.
 Example:
 ```
 rays3 rays3 raysI raysShrug rays3 rays3 raysI raysFox rays3 rays2 raysI raysFox

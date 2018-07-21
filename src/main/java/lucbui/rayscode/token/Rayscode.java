@@ -170,12 +170,46 @@ public enum Rayscode implements RayscodeFunction {
         }
     },
     /**
-     * The "Raysfox" operator, acts as a semicolon. Functionally, a no-op.
+     * Begins an IF block.
+     * If the top-most value in the stack is nonpositive, or the stack is empty, the block between this IF and an ELSE
+     * or ENDIF clause is executed. Otherwise, execution jumps to the corresponding ELSE clause, or an ENDIF clause.
+     *
+     * IF consumes the top-most value in the stack.
      */
-    MARKER(){
+    IF(){
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
-            //Does nothing. Is just a marker after all.
+            if(stack.isEmpty() || stack.pop().compareTo(BigInteger.ZERO) <= 0){
+                //First Expression. We're already there so don't do anything.
+            } else {
+                //Jump to the ELSE operator and begin execution from there.
+                if(!iterator.advanceTo(ELSE, ENDIF)){
+                    throw new IllegalArgumentException("IF not bound by an ELSE or ENDIF");
+                }
+            }
+        }
+    },
+    /**
+     * Begins an ELSE block.
+     * If encountered, it jumps to the ENDIF block.
+     */
+    ELSE(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+            //If we hit ELSE, we were in the "IF" portion of the block, and we jump to the ENDIF.
+            if(!iterator.advanceTo(ENDIF)){
+                throw new IllegalArgumentException("ELSE not bound by ENDIF");
+            }
+        }
+    },
+    /**
+     * Ends the IF-ELSE block.
+     * Otherwise does nothing.
+     */
+    ENDIF(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+            //Do nothing. This just marks the end of the if-else block
         }
     };
 

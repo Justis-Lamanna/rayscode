@@ -76,6 +76,23 @@ public class EvaluatorIterator<T> {
     }
 
     /**
+     * Advance to a specific value in the list.
+     * @param values The value(s) to advance to
+     * @return True if the value was found, false if not.
+     */
+    public boolean advanceTo(T... values) {
+        for(int idx = currentIndex; idx < list.size(); idx++){
+            for(T value : values) {
+                if (Objects.equals(value, list.get(idx))) {
+                    currentIndex = idx;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Checks if we are at the end of the list.
      * @return True if the list is fully traversed.
      */
