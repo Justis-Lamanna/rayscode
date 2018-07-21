@@ -96,8 +96,8 @@ else {
 }
 ```
 
-### Assignment (NE)
-raysLove - Binds a value to a variable. (Wimp Mode)
+### Assignment
+raysLove - Binds a value to a variable.
 ```
 rays3 rays2 raysI raysOne raysLove
 =>
