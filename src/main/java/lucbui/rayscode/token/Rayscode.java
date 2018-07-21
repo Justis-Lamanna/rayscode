@@ -49,6 +49,7 @@ public enum Rayscode implements RayscodeFunction {
     },
     /**
      * An add operator, which pops twice and pushes their sum
+     * top-most = top-most + second-top-most
      */
     ADD() {
         @Override
@@ -58,6 +59,7 @@ public enum Rayscode implements RayscodeFunction {
     },
     /**
      * A subtraction operator, which pops twice and pushes their difference
+     * top-most = top-most - second-top-most
      */
     SUBTRACT() {
         @Override
@@ -67,6 +69,7 @@ public enum Rayscode implements RayscodeFunction {
     },
     /**
      * A multiplication operator, which pops twice and pushes their product
+     * top-most = top-most * second-top-most
      */
     MULTIPLY() {
         @Override
@@ -76,6 +79,7 @@ public enum Rayscode implements RayscodeFunction {
     },
     /**
      * A division operator, which pops twice and pushes their quotient
+     * top-most = top-most / second-top-most
      */
     DIVIDE() {
         @Override
@@ -84,7 +88,7 @@ public enum Rayscode implements RayscodeFunction {
         }
     },
     /**
-     * An input operator, which pops once (the number of chars to read), and pushes that number of chars from STD IN.
+     * An input operator, pushes all chars to STD:IN, in order of entry.
      */
     INPUT() {
         @Override
@@ -101,20 +105,19 @@ public enum Rayscode implements RayscodeFunction {
         }
     },
     /**
-     * An output operator, which pops once (the number of chars to read), and prints that number of chars to STD OUT.
-     * The popped characters are consumed.
+     * An output operator, which prints out the top-most value in the stack as an ASCII character.
+     * The popped character is consumed.
      */
     OUTPUT() {
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
-            iterate(stack.size())
-                    .forEach(i -> System.out.print((char) stack.pop().intValueExact()));
+            System.out.print((char) stack.pop().intValueExact());
             System.out.println();
 
         }
     },
     /**
-     * An operator which swaps a number of elements on the stack.
+     * An operator which swaps the top-most and the second-top-most element in the stack.
      */
     SWAP() {
         @Override
@@ -126,7 +129,7 @@ public enum Rayscode implements RayscodeFunction {
         }
     },
     /**
-     * A pop operator, which removes the first element from the stack.
+     * A pop operator, which removes the top-most element from the stack.
      */
     POP(){
         @Override
@@ -134,6 +137,9 @@ public enum Rayscode implements RayscodeFunction {
             stack.pop();
         }
     },
+    /**
+     * Duplicates the top-most element in the stack.
+     */
     DUPLICATE(){
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
@@ -142,12 +148,19 @@ public enum Rayscode implements RayscodeFunction {
             stack.push(toDuplicate);
         }
     },
+    /**
+     * Moves the top-most element to the bottom of the stack.
+     */
     ROLL(){
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.addLast(stack.pop());
         }
     },
+    /**
+     * Binds a value to a variable.
+     * The previous rayscode function MUST be a RayscodeVar. The variable name is bound to the top-most element in the stack.
+     */
     ASSIGNMENT(){
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
@@ -155,8 +168,22 @@ public enum Rayscode implements RayscodeFunction {
             BigInteger value = stack.peek();
             evaluator.setVariableValue(var.getVariableName(), value);
         }
+    },
+    /**
+     * The "Raysfox" operator, acts as a semicolon. Functionally, a no-op.
+     */
+    MARKER(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+            //Does nothing. Is just a marker after all.
+        }
     };
 
+    /**
+     * Helper limit to create a stream for-loop.
+     * @param stackSize The number of iterations to perform.
+     * @return A stream which performs that number of iterations.
+     */
     private static Stream<Integer> iterate(int stackSize){
         return Stream.iterate(0, i -> i + 1)
                 .limit(stackSize);
