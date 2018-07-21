@@ -5,6 +5,7 @@ import lucbui.rayscode.evaluator.RayscodeEvaluator;
 
 import java.math.BigInteger;
 import java.util.Deque;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -22,7 +23,7 @@ public enum Rayscode implements RayscodeFunction {
         BigInteger two = BigInteger.valueOf(2);
 
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.push(two);
         }
     },
@@ -34,7 +35,7 @@ public enum Rayscode implements RayscodeFunction {
         BigInteger three = BigInteger.valueOf(3);
 
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.push(three);
         }
     },
@@ -43,8 +44,30 @@ public enum Rayscode implements RayscodeFunction {
      */
     SIZE() {
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.push(BigInteger.valueOf(stack.size()));
+        }
+    },
+    /**
+     * A variable function.
+     */
+    VARIABLE(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            String varName = iterator.get().getId();
+            if(evaluator.hasVariableValue(varName)) {
+                stack.push(evaluator.getVariableValue(varName));
+            } else {
+                //If there isn't a definition for this yet, and the next instruction isn't assignment, we are in error.
+                if(iterator.getNext().getFunction() != Rayscode.ASSIGNMENT){
+                    throw new IllegalArgumentException(varName + " is not assigned!");
+                }
+            }
+        }
+
+        @Override
+        public boolean requiresId(){
+            return true;
         }
     },
     /**
@@ -53,7 +76,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     ADD() {
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.push(stack.pop().add(stack.pop()));
         }
     },
@@ -63,7 +86,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     SUBTRACT() {
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.push(stack.pop().subtract(stack.pop()));
         }
     },
@@ -73,7 +96,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     MULTIPLY() {
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.push(stack.pop().multiply(stack.pop()));
         }
     },
@@ -83,7 +106,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     DIVIDE() {
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.push(stack.pop().divide(stack.pop()));
         }
     },
@@ -92,7 +115,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     INPUT() {
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             System.out.print(">> ");
 
             Scanner inputScanner = new Scanner(System.in);
@@ -110,7 +133,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     OUTPUT() {
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             System.out.print((char) stack.pop().intValueExact());
             System.out.println();
 
@@ -121,7 +144,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     SWAP() {
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             BigInteger first = stack.pop();
             BigInteger second = stack.pop();
             stack.push(first);
@@ -133,7 +156,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     POP(){
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.pop();
         }
     },
@@ -142,7 +165,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     DUPLICATE(){
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             BigInteger toDuplicate = stack.pop();
             stack.push(toDuplicate);
             stack.push(toDuplicate);
@@ -153,20 +176,20 @@ public enum Rayscode implements RayscodeFunction {
      */
     ROLL(){
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             stack.addLast(stack.pop());
         }
     },
     /**
      * Binds a value to a variable.
-     * The previous rayscode function MUST be a RayscodeVar. The variable name is bound to the top-most element in the stack.
+     * The previous rayscode function MUST be a variable. The variable name is bound to the top-most element in the stack.
      */
     ASSIGNMENT(){
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
-            RayscodeVar var = (RayscodeVar) iterator.getPrevious();
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            String varName = iterator.getPrevious().getId();
             BigInteger value = stack.peek();
-            evaluator.setVariableValue(var.getVariableName(), value);
+            evaluator.setVariableValue(varName, value);
         }
     },
     /**
@@ -178,15 +201,23 @@ public enum Rayscode implements RayscodeFunction {
      */
     IF(){
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            String id = iterator.get().getId();
             if(stack.isEmpty() || stack.pop().compareTo(BigInteger.ZERO) <= 0){
                 //First Expression. We're already there so don't do anything.
             } else {
-                //Jump to the ELSE operator and begin execution from there.
-                if(!iterator.advanceTo(ELSE, ENDIF)){
-                    throw new IllegalArgumentException("IF not bound by an ELSE or ENDIF");
+                //Jump to the else or end clause with equivalent ID.
+                if(!iterator.advanceTo(
+                        i -> Objects.equals(i.getId(), id) &&
+                                (i.getFunction() == ELSE || i.getFunction() == ENDIF))){
+                    throw new IllegalArgumentException("No END IF or ELSE clause for ID=" + id + " found.");
                 }
             }
+        }
+
+        @Override
+        public boolean requiresId(){
+            return true;
         }
     },
     /**
@@ -195,11 +226,19 @@ public enum Rayscode implements RayscodeFunction {
      */
     ELSE(){
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
-            //If we hit ELSE, we were in the "IF" portion of the block, and we jump to the ENDIF.
-            if(!iterator.advanceTo(ENDIF)){
-                throw new IllegalArgumentException("ELSE not bound by ENDIF");
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            String id = iterator.get().getId();
+            //Jump to the endif clause with the matching ID.
+            if(!iterator.advanceTo(
+                    i -> Objects.equals(i.getId(), id) &&
+                            (i.getFunction() == ENDIF))){
+                throw new IllegalArgumentException("No END IF clause for ID=" + id + " found.");
             }
+        }
+
+        @Override
+        public boolean requiresId(){
+            return true;
         }
     },
     /**
@@ -208,8 +247,13 @@ public enum Rayscode implements RayscodeFunction {
      */
     ENDIF(){
         @Override
-        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             //Do nothing. This just marks the end of the if-else block
+        }
+
+        @Override
+        public boolean requiresId(){
+            return true;
         }
     };
 

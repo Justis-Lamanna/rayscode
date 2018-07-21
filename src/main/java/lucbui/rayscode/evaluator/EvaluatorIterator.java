@@ -1,7 +1,7 @@
 package lucbui.rayscode.evaluator;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * A special iterator of my own design to help with code flow modification.
@@ -77,16 +77,29 @@ public class EvaluatorIterator<T> {
 
     /**
      * Advance to a specific value in the list.
-     * @param values The value(s) to advance to
+     * @param predicate A predicate which identifies the value to find.
      * @return True if the value was found, false if not.
      */
-    public boolean advanceTo(T... values) {
-        for(int idx = currentIndex; idx < list.size(); idx++){
-            for(T value : values) {
-                if (Objects.equals(value, list.get(idx))) {
-                    currentIndex = idx;
-                    return true;
-                }
+    public boolean advanceTo(Predicate<T> predicate) {
+        for(int idx = currentIndex + 1; idx < list.size(); idx++){
+             if (predicate.test(list.get(idx))) {
+                currentIndex = idx;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Advance backwards to a specific value in the list.
+     * @param predicate A predicate which identifies the value to find.
+     * @return True if the value was found, false if not.
+     */
+    public boolean advanceBackTo(Predicate<T> predicate){
+        for(int idx = currentIndex - 1; idx >= 0; idx--){
+            if (predicate.test(list.get(idx))) {
+                currentIndex = idx;
+                return true;
             }
         }
         return false;

@@ -18,7 +18,13 @@ public interface RayscodeFunction {
      * @param evaluator The evaluator calling this function
      * @return The return values
      */
-    void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator);
+    void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator);
 
-
+    /**
+     * Returns if an ID is required for this particular function. Default to false.
+     * @return True if a function needs an ID.
+     */
+    default boolean requiresId(){
+        return false;
+    }
 }

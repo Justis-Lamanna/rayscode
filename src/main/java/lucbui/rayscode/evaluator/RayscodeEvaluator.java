@@ -1,8 +1,6 @@
 package lucbui.rayscode.evaluator;
 
-import lucbui.rayscode.token.Rayscode;
-import lucbui.rayscode.token.RayscodeFunction;
-import lucbui.rayscode.token.RayscodeVar;
+import lucbui.rayscode.token.RayscodeFunctionMetadata;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -19,12 +17,12 @@ public class RayscodeEvaluator {
      * @param code The code to evaluate
      * @return The final value in the stack.
      */
-    public Deque<BigInteger> evaluate(List<RayscodeFunction> code){
+    public Deque<BigInteger> evaluate(List<RayscodeFunctionMetadata> code){
         Deque<BigInteger> stack = new LinkedList<>();
-        EvaluatorIterator<RayscodeFunction> iterator = new EvaluatorIterator<>(code);
+        EvaluatorIterator<RayscodeFunctionMetadata> iterator = new EvaluatorIterator<>(code);
         while(!iterator.isComplete()){
-            RayscodeFunction func = iterator.get();
-            func.execute(stack, iterator, this);
+            RayscodeFunctionMetadata metadata = iterator.get();
+            metadata.getFunction().execute(stack, iterator, this);
             iterator.advance();
         }
         return stack;
