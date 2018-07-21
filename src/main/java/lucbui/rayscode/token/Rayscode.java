@@ -1,10 +1,10 @@
 package lucbui.rayscode.token;
 
+import lucbui.rayscode.evaluator.EvaluatorIterator;
 import lucbui.rayscode.evaluator.RayscodeEvaluator;
 
 import java.math.BigInteger;
 import java.util.Deque;
-import java.util.ListIterator;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -22,7 +22,7 @@ public enum Rayscode implements RayscodeFunction {
         BigInteger two = BigInteger.valueOf(2);
 
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.push(two);
         }
     },
@@ -34,7 +34,7 @@ public enum Rayscode implements RayscodeFunction {
         BigInteger three = BigInteger.valueOf(3);
 
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.push(three);
         }
     },
@@ -43,7 +43,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     SIZE() {
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.push(BigInteger.valueOf(stack.size()));
         }
     },
@@ -52,7 +52,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     ADD() {
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.push(stack.pop().add(stack.pop()));
         }
     },
@@ -61,7 +61,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     SUBTRACT() {
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.push(stack.pop().subtract(stack.pop()));
         }
     },
@@ -70,7 +70,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     MULTIPLY() {
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.push(stack.pop().multiply(stack.pop()));
         }
     },
@@ -79,7 +79,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     DIVIDE() {
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.push(stack.pop().divide(stack.pop()));
         }
     },
@@ -88,7 +88,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     INPUT() {
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             System.out.print(">> ");
 
             Scanner inputScanner = new Scanner(System.in);
@@ -106,7 +106,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     OUTPUT() {
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             iterate(stack.size())
                     .forEach(i -> System.out.print((char) stack.pop().intValueExact()));
             System.out.println();
@@ -118,7 +118,7 @@ public enum Rayscode implements RayscodeFunction {
      */
     SWAP() {
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             BigInteger first = stack.pop();
             BigInteger second = stack.pop();
             stack.push(first);
@@ -130,13 +130,13 @@ public enum Rayscode implements RayscodeFunction {
      */
     POP(){
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.pop();
         }
     },
     DUPLICATE(){
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             BigInteger toDuplicate = stack.pop();
             stack.push(toDuplicate);
             stack.push(toDuplicate);
@@ -144,16 +144,14 @@ public enum Rayscode implements RayscodeFunction {
     },
     ROLL(){
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
             stack.addLast(stack.pop());
         }
     },
     ASSIGNMENT(){
         @Override
-        public void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
-            iterator.previous(); // Go back two to get our RayscodeVar
-            RayscodeVar var = (RayscodeVar) iterator.previous();
-            iterator.next(); iterator.next();//Reset back to where we were.
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator) {
+            RayscodeVar var = (RayscodeVar) iterator.getPrevious();
             BigInteger value = stack.peek();
             evaluator.setVariableValue(var.getVariableName(), value);
         }

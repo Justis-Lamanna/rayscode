@@ -21,10 +21,11 @@ public class RayscodeEvaluator {
      */
     public Deque<BigInteger> evaluate(List<RayscodeFunction> code){
         Deque<BigInteger> stack = new LinkedList<>();
-        ListIterator<RayscodeFunction> iterator = code.listIterator();
-        while(iterator.hasNext()){
-            RayscodeFunction func = iterator.next();
+        EvaluatorIterator<RayscodeFunction> iterator = new EvaluatorIterator<>(code);
+        while(!iterator.isComplete()){
+            RayscodeFunction func = iterator.get();
             func.execute(stack, iterator, this);
+            iterator.advance();
         }
         return stack;
     }

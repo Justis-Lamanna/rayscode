@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String... args) {
         RayscodeEvaluator eval = new RayscodeEvaluator();
-        List<RayscodeFunction> code = Arrays.asList(INPUT, SIZE, RayscodeVar.of("size"), ASSIGNMENT, RayscodeVar.of("size"), ADD); //length of input + input
+        List<RayscodeFunction> code = Arrays.asList(INPUT, SIZE, RayscodeVar.of("size"), ADD); //length of input + input
         System.out.println(code.toString() + "=" + eval.evaluate(code) + ":" + eval.getVars());
     }
 }

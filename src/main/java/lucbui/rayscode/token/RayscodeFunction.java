@@ -1,10 +1,10 @@
 package lucbui.rayscode.token;
 
+import lucbui.rayscode.evaluator.EvaluatorIterator;
 import lucbui.rayscode.evaluator.RayscodeEvaluator;
 
 import java.math.BigInteger;
 import java.util.Deque;
-import java.util.ListIterator;
 
 /**
  * A subinterface to mark certain functions explicitly as RayscodeFunctions
@@ -18,7 +18,7 @@ public interface RayscodeFunction {
      * @param evaluator The evaluator calling this function
      * @return The return values
      */
-    void execute(Deque<BigInteger> stack, ListIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator);
+    void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunction> iterator, RayscodeEvaluator evaluator);
 
 
 }
