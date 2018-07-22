@@ -197,13 +197,13 @@ public enum Rayscode implements RayscodeFunction {
      * If the top-most value in the stack is nonpositive, or the stack is empty, the block between this IF and an ELSE
      * or ENDIF clause is executed. Otherwise, execution jumps to the corresponding ELSE clause, or an ENDIF clause.
      *
-     * IF consumes the top-most value in the stack.
+     * IF does not consume any values.
      */
     IF(){
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             String id = iterator.get().getId();
-            if(stack.isEmpty() || stack.pop().compareTo(BigInteger.ZERO) <= 0){
+            if(stack.isEmpty() || stack.peek().compareTo(BigInteger.ZERO) <= 0){
                 //First Expression. We're already there so don't do anything.
             } else {
                 //Jump to the else or end clause with equivalent ID.
@@ -249,6 +249,40 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             //Do nothing. This just marks the end of the if-else block
+        }
+
+        @Override
+        public boolean requiresId(){
+            return true;
+        }
+    },
+    /**
+     * Mark the beginning of a loop.
+     */
+    STARTLOOP(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            //Do nothing. This just marks the start of the loop.
+        }
+
+        @Override
+        public boolean requiresId(){
+            return true;
+        }
+    },
+    /**
+     * Marks the end of a loop.
+     */
+    ENDLOOP(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            String id = iterator.get().getId();
+            //Jump to the STARTLOOP clause with the matching ID.
+            if(!iterator.advanceBackTo(
+                    i -> Objects.equals(i.getId(), id) &&
+                            (i.getFunction() == STARTLOOP))){
+                throw new IllegalArgumentException("No STARTLOOP clause for ID=" + id + " found.");
+            }
         }
 
         @Override

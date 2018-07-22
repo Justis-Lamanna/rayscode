@@ -46,12 +46,12 @@ raysThree raysT
 //retrieves three characters, and puts them in the stack
 ```
 
-raysQ: Writes to console. Writes the specified number of characters on the stack as characters.
+raysQ: Writes one letter to STD:OUT. The character is consumed.
 Example:
 ```
 raysThree raysQ
 =>
-//prints three chars at the top of the stack
+//prints ASCII char 3, which isn't visible.
 ```
 
 Note: Reading followed by writing will *swap* the string! 
@@ -79,7 +79,7 @@ if((3-3) <= 0){
 }
 ```
 
-### Looping (NE)
+### Looping
 raysC - Marks the loop point.
 raysLurk - Go to the loop point.
 Example:
