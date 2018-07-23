@@ -14,10 +14,6 @@ of a few hours one night). Rayscode is not intended to be mind-bashingly difficu
 caliber of other languages such as Pikachu and Brainfuck. Several commands are created to make your life a little
 simpler.
 
-### raysFox
-In rayscode, the raysFox marks the end of certain snippets. It basically combines the semicolon and the right
-parenthesis all in one symbol.
-
 ### Basic Functions
 All variables and methods must be prefixed with "rays".
 rays2 and rays3 make the only two literal numbers. Methods and combinations are called via postfix notation.
@@ -29,7 +25,7 @@ Standard operators:
 
 Example:
 ```
-raysFour rays2 rays2 raysP raysFox => var four = 2 + 2.
+raysFour rays2 rays2 raysP => var four = 2 + 2.
 ```
 
 Method declarations start with raysH, followed by the name, and number of arguments. Ends with raysZ.
@@ -38,7 +34,7 @@ Methods and variables are helpful functions for you, the programmer, as are the 
 operators. If you want, see if you can strip down your code to use only valid raysfire emotes!
 
 ### I/O
-raysT: Accepts input. Puts the specified number of characters entered onto the stack.
+raysLick: Accepts input. Puts the specified number of characters entered onto the stack.
 Example:
 ```
 raysThree raysT
@@ -66,8 +62,8 @@ rays3 rays2 rays2 rays2 rays2 rays3c
 ```
 
 ### If/Else
-Conditional operator: variable, followed by raysShrug, followed by an expression, a raysFox, another expression, 
-and another raysfox. Variable evaluates. If <= 0, or stack is empty, the first expression evaluates, otherwise, the second does.
+Conditional operator: variable, followed by raysShrug, followed by an expression, a raysT, another expression, 
+and a raysFox. Variable evaluates. If <= 0, or stack is empty, the first expression evaluates, otherwise, the second does.
 Example:
 ```
 rays3 rays3 raysI raysShrug rays3 rays3 raysI raysFox rays3 rays2 raysI raysFox
@@ -84,7 +80,7 @@ raysC - Marks the loop point.
 raysLurk - Go to the loop point.
 Example:
 ```
-rays3 raysC raysShrug rays3 rays2 raysI raysFox rays3 rays2 raysI raysI raysD raysFox
+rays3 raysC raysShrug rays3 rays2 raysI raysT rays3 rays2 raysI raysI raysD raysFox
 =>
 var = 3;
 loop:
@@ -152,11 +148,11 @@ raysB - Multiplication
 raysC - Marks start of loop  
 raysD - Pop  
 raysE - Duplicate stack  
-raysFox - Semicolon, and other marker  
+raysFox - End of if statement
 raysH - Marks the beginning of method declaration  
 raysI - Subtraction  
 raysL  
-raysLick  
+raysLick - Accepts input
 raysLove - Assignment  
 raysLurk - Marks end of loop  
 raysP - Addition  
@@ -164,6 +160,6 @@ raysQ - Print output
 raysShock - Swap  
 raysShrug - Conditional operator  
 raysShy  
-raysT - Accept input  
+raysT - "Else" operator
 raysThump - Roll
 raysZ - Marks the end of method declaration

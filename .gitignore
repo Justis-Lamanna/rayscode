@@ -1,2 +1,4 @@
 .idea
 *.iml
+# RayscodeLexer should always be freshly parsed using the flex task in Ant.
+src/main/java/lucbui/rayscode/lexer/RayscodeLexer.java
