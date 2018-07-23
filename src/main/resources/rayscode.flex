@@ -7,6 +7,7 @@ import lucbui.rayscode.token.RayscodeFunctionMetadata;
 
 %%
 
+%public
 %class RayscodeLexer
 %unicode
 %line
@@ -52,6 +53,9 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "raysD"                         {return code(Rayscode.POP);}
     "raysThump"                     {return code(Rayscode.ROLL);}
     "raysE"                         {return code(Rayscode.DUPLICATE);}
+
+    /* whitespace */
+    {WhiteSpace}                    { /* ignore */ }
 }
 
 /* error fallback */
