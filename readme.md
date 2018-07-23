@@ -25,7 +25,7 @@ Standard operators:
 
 Example:
 ```
-raysFour rays2 rays2 raysP => var four = 2 + 2.
+rays2 rays2 raysP => 2 + 2;
 ```
 
 Method declarations start with raysH, followed by the name, and number of arguments. Ends with raysZ.
@@ -34,12 +34,12 @@ Methods and variables are helpful functions for you, the programmer, as are the 
 operators. If you want, see if you can strip down your code to use only valid raysfire emotes!
 
 ### I/O
-raysLick: Accepts input. Puts the specified number of characters entered onto the stack.
+raysLick: Accepts input. Puts the characters entered onto the stack.
 Example:
 ```
-raysThree raysT
+raysT
 =>
-//retrieves three characters, and puts them in the stack
+//retrieves entered characters, and puts them in the stack
 ```
 
 raysQ: Writes one letter to STD:OUT. The character is consumed.
