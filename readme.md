@@ -37,7 +37,7 @@ operators. If you want, see if you can strip down your code to use only valid ra
 raysLick: Accepts input. Puts the characters entered onto the stack.
 Example:
 ```
-raysT
+raysLick
 =>
 //retrieves entered characters, and puts them in the stack
 ```

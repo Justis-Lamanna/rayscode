@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String... args) throws IOException {
         //Example code, which runs 2*2.
-        RayscodeLexer lex = new RayscodeLexer(new StringReader("rays2 rays2 raysB"));
+        RayscodeLexer lex = new RayscodeLexer(new StringReader("rays2 rays2 raysB raysFour raysLove"));
         RayscodeFunctionMetadata code;
         List<RayscodeFunctionMetadata> processedCode = new ArrayList<>();
         while((code = lex.nextToken()) != null){

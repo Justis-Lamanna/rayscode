@@ -32,9 +32,10 @@ import lucbui.rayscode.token.RayscodeFunctionMetadata;
 //This prints a debugging line after every parse. Remove it if it's annoying.
 %debug
 
-LineTerminator = \r|\n|\r\n
-InputCharacter = [^\r\n]
-WhiteSpace     = {LineTerminator} | [ \t\f]
+LineTerminator  = \r|\n|\r\n
+InputCharacter  = [^\r\n]
+WhiteSpace      = {LineTerminator} | [ \t\f]
+VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
 
 %%
 
@@ -53,6 +54,9 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
     "raysD"                         {return code(Rayscode.POP);}
     "raysThump"                     {return code(Rayscode.ROLL);}
     "raysE"                         {return code(Rayscode.DUPLICATE);}
+    "raysLove"                      {return code(Rayscode.ASSIGNMENT);}
+
+    {VarName}                       {return code(yytext(), Rayscode.VARIABLE);}
 
     /* whitespace */
     {WhiteSpace}                    { /* ignore */ }
