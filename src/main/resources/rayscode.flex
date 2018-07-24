@@ -1,13 +1,15 @@
 /* Rayscode Grammar */
 package lucbui.rayscode.lexer;
 
-import lucbui.rayscode.token.Rayscode;
-import lucbui.rayscode.token.RayscodeFunction;
-import lucbui.rayscode.token.RayscodeFunctionMetadata;
+import lucbui.rayscode.token.*;
 
 import java.util.Deque;
 import java.util.LinkedList;
 import java.math.BigInteger;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 %%
 
@@ -23,6 +25,11 @@ import java.math.BigInteger;
 
     private BigInteger loopHighestId = BigInteger.ZERO;
     private BigInteger ifElseHighestId = BigInteger.ZERO;
+
+    private String methodName = "";
+    private int numberOfArguments = 0;
+    private List<RayscodeFunctionMetadata> functionCode = new ArrayList<>();
+    private Map<String, RayscodeFunctionMetadata> functions = new HashMap<>();
     
     private RayscodeFunctionMetadata code(String id, RayscodeFunction func){
         return RayscodeFunctionMetadata.make(id, func);
@@ -46,6 +53,9 @@ LineTerminator  = \r|\n|\r\n
 InputCharacter  = [^\r\n]
 WhiteSpace      = {LineTerminator} | [ \t\f]
 VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
+
+%state NAME_FUNC
+%state FUNC
 
 %%
 
@@ -71,11 +81,50 @@ VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
     "raysShrug"                     {String id = ifElseHighestId.toString(); ifElseHighestId = ifElseHighestId.add(BigInteger.ONE); ifElseId.push(id); return code(id, Rayscode.IF);}
     "raysT"                         {return code(ifElseId.peek(), Rayscode.ELSE);}
     "raysFox"                       {return code(ifElseId.pop(), Rayscode.ENDIF);}
+    //Method Declaration, oboy
+    "raysH"                         {numberOfArguments = 0; functionCode.clear(); methodName = ""; yybegin(NAME_FUNC);}
 }
 
+<NAME_FUNC> {
+    {VarName}                       {methodName = yytext(); yybegin(FUNC);}
+    /* whitespace */
+    {WhiteSpace}                    { /* ignore */ }
+}
+
+//Maybe there is a more elegant way to do this, but I don't know it....
+<FUNC> {
+    "raysShy"                       {numberOfArguments++;}
+    "rays2"                         {functionCode.add(code(Rayscode.TWO));}
+    "rays3"                         {functionCode.add(code(Rayscode.THREE));}
+    "rays3c"                        {functionCode.add(code(Rayscode.SIZE));}
+    "raysP"                         {functionCode.add(code(Rayscode.ADD));}
+    "raysI"                         {functionCode.add(code(Rayscode.SUBTRACT));}
+    "raysB"                         {functionCode.add(code(Rayscode.MULTIPLY));}
+    "raysA"                         {functionCode.add(code(Rayscode.DIVIDE));}
+    "raysLick"                      {functionCode.add(code(Rayscode.INPUT));}
+    "raysQ"                         {functionCode.add(code(Rayscode.OUTPUT));}
+    "raysShock"                     {functionCode.add(code(Rayscode.SWAP));}
+    "raysD"                         {functionCode.add(code(Rayscode.POP));}
+    "raysThump"                     {functionCode.add(code(Rayscode.ROLL));}
+    "raysE"                         {functionCode.add(code(Rayscode.DUPLICATE));}
+    "raysLove"                      {functionCode.add(code(Rayscode.ASSIGNMENT));}
+                                    //Get the next ID, increment it on the counter, and push it on the stack. This is how we keep track of loops in the case of nested loops.
+    "raysC"                         {String id = loopHighestId.toString(); loopHighestId = loopHighestId.add(BigInteger.ONE); loopId.push(id); functionCode.add(code(id, Rayscode.STARTLOOP));}
+    "raysLurk"                      {functionCode.add(code(loopId.pop(), Rayscode.ENDLOOP));}
+    "raysShrug"                     {String id = ifElseHighestId.toString(); ifElseHighestId = ifElseHighestId.add(BigInteger.ONE); ifElseId.push(id); functionCode.add(code(id, Rayscode.IF));}
+    "raysT"                         {functionCode.add(code(ifElseId.peek(), Rayscode.ELSE));}
+    "raysFox"                       {functionCode.add(code(ifElseId.pop(), Rayscode.ENDIF));}
+
+    "raysZ"                         {RayscodeCustomFunction customFunc = new RayscodeCustomFunction(numberOfArguments, functionCode); functions.put(methodName, code(methodName, customFunc)); yybegin(YYINITIAL);}
+
+    /* whitespace */
+    {WhiteSpace}                    { /* ignore */ }
+}
+
+//Only in the last case should VarName be checked. 
 <YYINITIAL>{
 
-    {VarName}                       {return code(yytext(), Rayscode.VARIABLE);}
+    {VarName}                       {return functions.containsKey(yytext()) ? functions.get(yytext()) : code(yytext(), Rayscode.VARIABLE);}
 
     /* whitespace */
     {WhiteSpace}                    { /* ignore */ }

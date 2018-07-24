@@ -15,7 +15,7 @@ caliber of other languages such as Pikachu and Brainfuck. Several commands are c
 simpler.
 
 ### Basic Functions
-All variables and methods must be prefixed with "rays".
+All variables must be prefixed with "rays".
 rays2 and rays3 make the only two literal numbers. Methods and combinations are called via postfix notation.
 Standard operators:
 * Addition: raysP
@@ -28,7 +28,26 @@ Example:
 rays2 rays2 raysP => 2 + 2;
 ```
 
-Method declarations start with raysH, followed by the name, and number of arguments. Ends with raysZ.
+### Methods
+All methods must be prefixed with "rays". Method declaration must occur before their use.
+Declaration is as follows:
+1. raysH marks the beginning of method declaration.
+2. The name of the method.
+3. Zero or more raysShy mark the number of parameters. 
+4. The code functionality. 
+5. raysZ Marks the end of method declaration.
+
+Inside the method itself, a clean stack is provided, with the specified number of parameters. Any variables
+declared outside the function are usable inside the function, but any variables declared inside the function
+are forgotten when the function is exited. 
+
+```
+raysH raysSquare raysShy raysE raysB raysZ
+=>
+function square(param){
+    return param * param;
+}
+```
 
 Methods and variables are helpful functions for you, the programmer, as are the presence of multiplication and division
 operators. If you want, see if you can strip down your code to use only valid raysfire emotes!
@@ -159,7 +178,7 @@ raysP - Addition
 raysQ - Print output  
 raysShock - Swap  
 raysShrug - Conditional operator  
-raysShy  
+raysShy - Indicates "one" parameter in method declaration.
 raysT - "Else" operator
 raysThump - Roll
 raysZ - Marks the end of method declaration
