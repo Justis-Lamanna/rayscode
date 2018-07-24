@@ -4,23 +4,25 @@ import lucbui.rayscode.evaluator.EvaluatorIterator;
 import lucbui.rayscode.evaluator.RayscodeEvaluator;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 
+/**
+ * A custom function which executes a sequence of base function logic.
+ */
 public class RayscodeCustomFunction implements RayscodeFunction{
 
     private int numberOfParameters;
     private List<RayscodeFunctionMetadata> functionDefinition;
 
+    /**
+     * Creates a custom function.
+     * @param numberOfParameters The number of input parameters.
+     * @param functionDefinition The list of functions to execute.
+     */
     public RayscodeCustomFunction(int numberOfParameters, List<RayscodeFunctionMetadata> functionDefinition) {
         this.numberOfParameters = numberOfParameters;
         this.functionDefinition = functionDefinition;
-    }
-
-    public RayscodeCustomFunction(int numberOfParameters, RayscodeFunctionMetadata... functionDefinition) {
-        this.numberOfParameters = numberOfParameters;
-        this.functionDefinition = Arrays.asList(functionDefinition);
     }
 
     @Override

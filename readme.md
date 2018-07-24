@@ -49,6 +49,8 @@ function square(param){
 }
 ```
 
+Methods do not yet support recursion. 
+
 Methods and variables are helpful functions for you, the programmer, as are the presence of multiplication and division
 operators. If you want, see if you can strip down your code to use only valid raysfire emotes!
 

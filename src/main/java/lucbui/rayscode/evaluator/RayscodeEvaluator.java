@@ -1,5 +1,6 @@
 package lucbui.rayscode.evaluator;
 
+import lucbui.rayscode.token.RayscodeFunction;
 import lucbui.rayscode.token.RayscodeFunctionMetadata;
 
 import java.math.BigInteger;
@@ -12,11 +13,14 @@ import java.util.stream.Stream;
 public class RayscodeEvaluator {
 
     private Map<String, BigInteger> variables;
+    private Map<String, RayscodeFunctionMetadata> methods;
+    private boolean definingMethod = false;
     private Deque<BigInteger> stack;
 
     public RayscodeEvaluator() {
         variables = new HashMap<>();
         stack = new LinkedList<>();
+        methods = new HashMap<>();
     }
 
     /**
@@ -30,6 +34,7 @@ public class RayscodeEvaluator {
         RayscodeEvaluator newEvaluator = new RayscodeEvaluator();
         Stream.iterate(0, i -> i + 1).limit(numberOfParameters).forEach(i -> newEvaluator.stack.push(stack.pop()));
         newEvaluator.variables = new HashMap<>(variables);
+        newEvaluator.methods = new HashMap<>(methods);
         return newEvaluator;
     }
 
@@ -60,8 +65,30 @@ public class RayscodeEvaluator {
         }
     }
 
+    public boolean hasMethod(String name){return methods.containsKey(name);}
+
+    public RayscodeFunctionMetadata getMethod(String name){
+        if(methods.containsKey(name)){
+            return methods.get(name);
+        } else {
+            throw new IllegalArgumentException("No method called " + name);
+        }
+    }
+
     public void setVariableValue(String variableName, BigInteger value) {
         variables.put(variableName, value);
+    }
+
+    public void setMethod(String method, RayscodeFunctionMetadata function){
+        methods.put(method, function);
+    }
+
+    public void setDefiningMethod(boolean val){
+        definingMethod = val;
+    }
+
+    public boolean getDefiningMethod(){
+        return definingMethod;
     }
 
     public String getVars(){

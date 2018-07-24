@@ -4,9 +4,7 @@ import lucbui.rayscode.evaluator.EvaluatorIterator;
 import lucbui.rayscode.evaluator.RayscodeEvaluator;
 
 import java.math.BigInteger;
-import java.util.Deque;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -57,6 +55,8 @@ public enum Rayscode implements RayscodeFunction {
             String varName = iterator.get().getId();
             if(evaluator.hasVariableValue(varName)) {
                 stack.push(evaluator.getVariableValue(varName));
+            } else if(evaluator.hasMethod(varName)){
+                evaluator.getMethod(varName).getFunction().execute(stack, iterator, evaluator);
             } else {
                 //If there isn't a definition for this yet, and the next instruction isn't assignment, we are in error.
                 if(iterator.getNext().getFunction() != Rayscode.ASSIGNMENT){
@@ -288,6 +288,50 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public boolean requiresId(){
             return true;
+        }
+    },
+    STARTFUNC(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            if(iterator.getNext().getFunction() != VARIABLE){
+                throw new IllegalArgumentException("No Method Name");
+            }
+            iterator.advance();
+            String funcName = iterator.get().getId();
+            List<RayscodeFunctionMetadata> code = new ArrayList<>();
+            int numParams = 0;
+            while(iterator.getNext().getFunction() == PARAM){
+                numParams++;
+                iterator.advance();
+            }
+            iterator.advance();
+            while(iterator.get().getFunction() != ENDFUNC){
+                if(iterator.get().getFunction() == STARTFUNC){
+                    throw new IllegalArgumentException("Function " + funcName + "missing end declaration");
+                }
+                if(iterator.get().getFunction() == PARAM){
+                    throw new IllegalArgumentException("Unexpected parameter declaration");
+                }
+                code.add(iterator.get());
+                iterator.advance();
+                if(iterator.isComplete()){
+                    throw new IllegalArgumentException("Function " + funcName + "missing end declaration");
+                }
+            }
+
+            evaluator.setMethod(funcName, RayscodeFunctionMetadata.make(funcName, new RayscodeCustomFunction(numParams, code)));
+        }
+    },
+    PARAM(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            //Marker class
+        }
+    },
+    ENDFUNC(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+            //Marker class
         }
     };
 
