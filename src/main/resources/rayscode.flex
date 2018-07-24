@@ -33,6 +33,10 @@ import java.util.HashMap;
     private RayscodeFunctionMetadata code(RayscodeFunction func){
         return RayscodeFunctionMetadata.make(func);
     }
+
+    private void error(String text){
+        throw new Error("Reserved character " + text + " used");
+    }
 %}
 
 %function nextToken
@@ -79,6 +83,8 @@ VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
     "raysH"                         {yybegin(FUNC); return code(Rayscode.STARTFUNC);}
     "raysShy"                       {return code(Rayscode.PARAM);}
     "raysZ"                         {return code(Rayscode.ENDFUNC);}
+    //Reserved Foxs
+    "raysL"                         {error(yytext());}
 }
 
 <FUNC>{

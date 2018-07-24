@@ -3,9 +3,9 @@ A project to create a programming language based on the [raysfire emotes](https:
 All commands are one of the raysfire emotes, outside of optional support for variables/methods, which are still raysfire-like.
 
 ## Goals
-1. Draft basic documentation on code functionality.
-2. Add additional functionality. Possible end goal is to create functionality for each emote.
-3. Create an interpreter that correctly parses the rayscode language.
+1. Draft basic documentation on code functionality. DONE
+2. Add additional functionality. Possible end goal is to create functionality for each emote. DONE
+3. Create an interpreter that correctly parses the rayscode language. DONE
 4. Create a Discord bot which executes rayscode on-the-fly.
 
 ## Rayscode Standard
@@ -174,7 +174,7 @@ roll(1) //rays3 rays2 rays2 rays3
 ```
 
 ### Reserved Words
-All fox emotes are reserved for future use. All non-fox emotes are reserved for potential future use.
+All fox emotes are reserved for future use. All non-fox emotes are free for use.
 
 rays2 - Literal integer 2  
 rays3 - Literal integer 3  
