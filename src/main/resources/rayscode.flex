@@ -5,6 +5,10 @@ import lucbui.rayscode.token.Rayscode;
 import lucbui.rayscode.token.RayscodeFunction;
 import lucbui.rayscode.token.RayscodeFunctionMetadata;
 
+import java.util.Deque;
+import java.util.LinkedList;
+import java.math.BigInteger;
+
 %%
 
 %public
@@ -14,6 +18,12 @@ import lucbui.rayscode.token.RayscodeFunctionMetadata;
 %column
 
 %{
+    private Deque<String> loopId = new LinkedList<>(); 
+    private Deque<String> ifElseId = new LinkedList<>(); 
+
+    private BigInteger loopHighestId = BigInteger.ZERO;
+    private BigInteger ifElseHighestId = BigInteger.ZERO;
+    
     private RayscodeFunctionMetadata code(String id, RayscodeFunction func){
         return RayscodeFunctionMetadata.make(id, func);
     }
@@ -30,7 +40,7 @@ import lucbui.rayscode.token.RayscodeFunctionMetadata;
     return null;
 %eofval}
 //This prints a debugging line after every parse. Remove it if it's annoying.
-%debug
+//%debug
 
 LineTerminator  = \r|\n|\r\n
 InputCharacter  = [^\r\n]
@@ -55,6 +65,15 @@ VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
     "raysThump"                     {return code(Rayscode.ROLL);}
     "raysE"                         {return code(Rayscode.DUPLICATE);}
     "raysLove"                      {return code(Rayscode.ASSIGNMENT);}
+                                    //Get the next ID, increment it on the counter, and push it on the stack. This is how we keep track of loops in the case of nested loops.
+    "raysC"                         {String id = loopHighestId.toString(); loopHighestId = loopHighestId.add(BigInteger.ONE); loopId.push(id); return code(id, Rayscode.STARTLOOP);}
+    "raysLurk"                      {return code(loopId.pop(), Rayscode.ENDLOOP);}
+    "raysShrug"                     {String id = ifElseHighestId.toString(); ifElseHighestId = ifElseHighestId.add(BigInteger.ONE); ifElseId.push(id); return code(id, Rayscode.IF);}
+    "raysT"                         {return code(ifElseId.peek(), Rayscode.ELSE);}
+    "raysFox"                       {return code(ifElseId.pop(), Rayscode.ENDIF);}
+}
+
+<YYINITIAL>{
 
     {VarName}                       {return code(yytext(), Rayscode.VARIABLE);}
 

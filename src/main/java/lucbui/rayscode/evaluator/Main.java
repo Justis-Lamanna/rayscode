@@ -14,14 +14,13 @@ import java.util.List;
 public class Main {
 
     public static void main(String... args) throws IOException {
-        //Example code, which runs 2*2.
-        RayscodeLexer lex = new RayscodeLexer(new StringReader("rays2 rays2 raysB raysFour raysLove"));
+        //Example code, which adds 0 to the stack if no input was read, and 1 if input was read.
+        RayscodeLexer lex = new RayscodeLexer(new StringReader("raysLick raysShrug rays3 raysT rays2 raysFox rays3 raysI"));
         RayscodeFunctionMetadata code;
         List<RayscodeFunctionMetadata> processedCode = new ArrayList<>();
         while((code = lex.nextToken()) != null){
             processedCode.add(code);
         }
-
         evaluate(processedCode);
     }
 
