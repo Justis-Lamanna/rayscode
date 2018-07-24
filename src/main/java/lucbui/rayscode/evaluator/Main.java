@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String... args) throws IOException {
         //Example code, which defines method raysSquare, and applies it to the number 3.
-        RayscodeLexer lex = new RayscodeLexer(new StringReader("raysH raysSquare raysShy raysE raysB raysZ raysH raysDouble raysShy rays2 raysB raysZ rays3 raysSquare raysDouble"));
+        RayscodeLexer lex = new RayscodeLexer(new StringReader("raysH raysSquare raysShy raysE raysB raysZ rays3 raysSquare"));
         RayscodeFunctionMetadata code;
         List<RayscodeFunctionMetadata> processedCode = new ArrayList<>();
         while((code = lex.nextToken()) != null){

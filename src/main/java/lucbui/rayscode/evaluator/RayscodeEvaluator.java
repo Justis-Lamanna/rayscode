@@ -47,7 +47,13 @@ public class RayscodeEvaluator {
         EvaluatorIterator<RayscodeFunctionMetadata> iterator = new EvaluatorIterator<>(code);
         while(!iterator.isComplete()){
             RayscodeFunctionMetadata metadata = iterator.get();
-            metadata.getFunction().execute(stack, iterator, this);
+            RayscodeFunction funcToExecute;
+            if(methods.containsKey(metadata.getId())){
+                funcToExecute = methods.get(metadata.getId()).getFunction();
+            } else {
+                funcToExecute = metadata.getFunction();
+            }
+            funcToExecute.execute(stack, iterator, this);
             iterator.advance();
         }
         return stack;

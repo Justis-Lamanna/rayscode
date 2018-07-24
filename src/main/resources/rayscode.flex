@@ -49,23 +49,25 @@ InputCharacter  = [^\r\n]
 WhiteSpace      = {LineTerminator} | [ \t\f]
 VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
 
+%state FUNC
+
 %%
 
 <YYINITIAL> {
     //Literals are straightforward to parse.
-    "rays2"                         {return code(Rayscode.TWO);}
-    "rays3"                         {return code(Rayscode.THREE);}
-    "rays3c"                        {return code(Rayscode.SIZE);}
-    "raysP"                         {return code(Rayscode.ADD);}
-    "raysI"                         {return code(Rayscode.SUBTRACT);}
-    "raysB"                         {return code(Rayscode.MULTIPLY);}
-    "raysA"                         {return code(Rayscode.DIVIDE);}
-    "raysLick"                      {return code(Rayscode.INPUT);}
-    "raysQ"                         {return code(Rayscode.OUTPUT);}
-    "raysShock"                     {return code(Rayscode.SWAP);}
-    "raysD"                         {return code(Rayscode.POP);}
-    "raysThump"                     {return code(Rayscode.ROLL);}
-    "raysE"                         {return code(Rayscode.DUPLICATE);}
+    "rays2"                         {return code(yytext(), Rayscode.TWO);}
+    "rays3"                         {return code(yytext(), Rayscode.THREE);}
+    "rays3c"                        {return code(yytext(), Rayscode.SIZE);}
+    "raysP"                         {return code(yytext(), Rayscode.ADD);}
+    "raysI"                         {return code(yytext(), Rayscode.SUBTRACT);}
+    "raysB"                         {return code(yytext(), Rayscode.MULTIPLY);}
+    "raysA"                         {return code(yytext(), Rayscode.DIVIDE);}
+    "raysLick"                      {return code(yytext(), Rayscode.INPUT);}
+    "raysQ"                         {return code(yytext(), Rayscode.OUTPUT);}
+    "raysShock"                     {return code(yytext(), Rayscode.SWAP);}
+    "raysD"                         {return code(yytext(), Rayscode.POP);}
+    "raysThump"                     {return code(yytext(), Rayscode.ROLL);}
+    "raysE"                         {return code(yytext(), Rayscode.DUPLICATE);}
     "raysLove"                      {return code(Rayscode.ASSIGNMENT);}
     //Control structures
     "raysC"                         {String id = loopHighestId.toString(); loopHighestId = loopHighestId.add(BigInteger.ONE); loopId.push(id); return code(id, Rayscode.STARTLOOP);}
@@ -74,9 +76,16 @@ VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
     "raysT"                         {return code(ifElseId.peek(), Rayscode.ELSE);}
     "raysFox"                       {return code(ifElseId.pop(), Rayscode.ENDIF);}
     //Method Declaration
-    "raysH"                         {return code(Rayscode.STARTFUNC);}
+    "raysH"                         {yybegin(FUNC); return code(Rayscode.STARTFUNC);}
     "raysShy"                       {return code(Rayscode.PARAM);}
     "raysZ"                         {return code(Rayscode.ENDFUNC);}
+}
+
+<FUNC>{
+    {VarName}                       {yybegin(YYINITIAL); return code(yytext(), Rayscode.METHOD);}
+
+    /* whitespace */
+    {WhiteSpace}                    { /* ignore */ }
 }
 
 //Only in the last case should VarName be checked. 

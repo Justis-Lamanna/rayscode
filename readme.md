@@ -49,7 +49,22 @@ function square(param){
 }
 ```
 
-Methods do not yet support recursion. 
+Methods support recursion. Additionally, the following methods can be overwritten:
+* rays2
+* rays3
+* rays3c
+* raysP
+* raysI
+* raysB
+* raysA
+* raysLick
+* raysQ
+* raysShock
+* raysD
+* raysThump
+* raysE
+
+(Remember that you will hit a recursive loop if you used these methods in the overwritten method!)
 
 Methods and variables are helpful functions for you, the programmer, as are the presence of multiplication and division
 operators. If you want, see if you can strip down your code to use only valid raysfire emotes!
@@ -180,7 +195,7 @@ raysP - Addition
 raysQ - Print output  
 raysShock - Swap  
 raysShrug - Conditional operator  
-raysShy - Indicates "one" parameter in method declaration.
-raysT - "Else" operator
-raysThump - Roll
-raysZ - Marks the end of method declaration
+raysShy - Indicates "one" parameter in method declaration.  
+raysT - "Else" operator  
+raysThump - Roll  
+raysZ - Marks the end of method declaration  

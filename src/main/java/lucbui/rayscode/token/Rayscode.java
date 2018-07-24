@@ -290,14 +290,25 @@ public enum Rayscode implements RayscodeFunction {
             return true;
         }
     },
+    METHOD(){
+        @Override
+        public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+
+        }
+
+        @Override
+        public boolean requiresId() {
+            return true;
+        }
+    },
     STARTFUNC(){
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
-            if(iterator.getNext().getFunction() != VARIABLE){
-                throw new IllegalArgumentException("No Method Name");
-            }
             iterator.advance();
             String funcName = iterator.get().getId();
+            if(funcName == null){
+                throw new IllegalArgumentException("Illegal method overwritten!");
+            }
             List<RayscodeFunctionMetadata> code = new ArrayList<>();
             int numParams = 0;
             while(iterator.getNext().getFunction() == PARAM){
