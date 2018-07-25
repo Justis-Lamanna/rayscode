@@ -12,9 +12,15 @@ import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.*;
 
+/**
+ * Quick and dirty Listener Parser.
+ */
 public class RayscodeBotMessageListener extends ListenerAdapter {
 
+    //A code cache, for each user.
     private Map<User, StringBuilder> cacheToStore = new HashMap<>();
+    //Paused listeners. We use a queue, so if multiple code is waiting for input, we unpause them in
+    //request order.
     private Queue<RayscodeEvaluator> pausedEvaluators = new LinkedList<>();
 
     @Override
@@ -24,10 +30,11 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         String rawMessage = message.getContentDisplay();
         MessageChannel channel = event.getChannel();
 
+        //To check if I am the source of the message.
         User me = event.getJDA().getSelfUser();
 
         if(!event.isFromType(ChannelType.TEXT)){
-            return;
+            return; //Ignore DMs and other messages for now.
         }
         //Check if the bot was pinged.
         if(message.getMentionedUsers().stream()
@@ -36,6 +43,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         } else if(rawMessage.startsWith("!eval")) {
             String codeString;
             if(rawMessage.length() == 5){
+                //If the command is just "!eval", we evaluate whatever code is in the cache.
                 if(cacheToStore.containsKey(message.getAuthor())){
                     codeString = cacheToStore.get(message.getAuthor()).toString();
                 } else {
@@ -43,6 +51,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
                     return;
                 }
             } else {
+                //Otherwise, we evaluate the code following !eval.
                 codeString = rawMessage.substring(5).trim();
             }
             try {
@@ -55,7 +64,9 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
                 ex.printStackTrace();
             }
         } else if(rawMessage.startsWith("!store")) {
+            //Store is used to bypass the 2000 character limit, for bigger functions.
             if(rawMessage.length() == 6){
+                //If the command is just "!store", we DM the user whatever they have in their store.
                 if(!cacheToStore.containsKey(message.getAuthor())){
                     channel.sendMessage("You have no code stored.").queue();
                 } else {
@@ -68,29 +79,32 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
                     channel.sendMessage("I DM'ed you the contents of your cache.").queue();
                 }
             } else {
+                //Otherwise, we append whatever the user requests to store to their current store.
                 rawMessage = rawMessage.substring(6).trim();
                 cacheToStore.computeIfAbsent(message.getAuthor(), u -> new StringBuilder()).append(rawMessage).append(" ");
                 channel.sendMessage("I stored this code for later evaluation. You can add more to this code using the same command.").queue();
             }
         } else if(rawMessage.equals("!clean")) {
+            //Clean their store for re-use.
             if(cacheToStore.containsKey(message.getAuthor())){
                 cacheToStore.remove(message.getAuthor());
                 channel.sendMessage("Alright, I deleted everything you had stored.").queue();
             } else {
                 channel.sendMessage("You don't have anything stored.").queue();
             }
-        } else if(rawMessage.startsWith("!")){
-            channel.sendMessage("I don't recognize that command").queue();
         } else if(!Objects.equals(message.getAuthor(), me) && !pausedEvaluators.isEmpty()){
+            //If an evaluator is paused (waiting for input), we resume it now with the input message.
             RayscodeEvaluator eval = pausedEvaluators.remove();
             eval.setInputString(rawMessage);
             eval.setPaused(false);
             evaluate(eval, channel);
         } else if(rawMessage.startsWith("!")){
+            //They're trying to use an unknown command
             channel.sendMessage("I don't recognize that command").queue();
         }
     }
 
+    //"Compiles" a code string to some actual code.
     private List<RayscodeFunctionMetadata> compile(String codeString) throws IOException{
         RayscodeLexer lexer = new RayscodeLexer(new StringReader(codeString));
         List<RayscodeFunctionMetadata> functionCode = new ArrayList<>();
@@ -102,12 +116,15 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         return functionCode;
     }
 
+    //Evaluate some code, and posts the final results.
     private void evaluate(RayscodeEvaluator eval, MessageChannel channel){
         Deque<BigInteger> endStack = eval.evaluate();
         if(eval.isPaused()){
+            //Evaluator is waiting for input.
             pausedEvaluators.add(eval);
             channel.sendMessage("Waiting for input...").queue();
         } else {
+            //Print stack if no output string is specified, otherwise print the output string.
             if(eval.getOutputString() == null) {
                 channel.sendMessage("End Result: ```" + endStack.toString() + "```").queue();
             } else {
