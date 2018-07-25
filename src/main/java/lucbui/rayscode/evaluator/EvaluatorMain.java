@@ -25,7 +25,7 @@ public class EvaluatorMain {
     }
 
     private static void evaluate(List<RayscodeFunctionMetadata> code){
-        RayscodeEvaluator eval = new RayscodeEvaluator();
-        System.out.println(code.toString() + "=" + eval.evaluate(code) + ":" + eval.getVars());
+        RayscodeEvaluator eval = new RayscodeEvaluator(code);
+        System.out.println(code.toString() + "=" + eval.evaluate() + ":" + eval.getVars());
     }
 }

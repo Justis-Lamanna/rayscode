@@ -15,6 +15,7 @@ import java.util.*;
 public class RayscodeBotMessageListener extends ListenerAdapter {
 
     private Map<User, StringBuilder> cacheToStore = new HashMap<>();
+    private Queue<RayscodeEvaluator> pausedEvaluators = new LinkedList<>();
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
@@ -32,8 +33,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         if(message.getMentionedUsers().stream()
                 .anyMatch(user -> Objects.equals(user, me))) {
             channel.sendMessage("Hi! To use me, begin a message with !eval and follow it with your raysCode!").queue();
-        }
-        else if(rawMessage.startsWith("!eval")) {
+        } else if(rawMessage.startsWith("!eval")) {
             String codeString;
             if(rawMessage.length() == 5){
                 if(cacheToStore.containsKey(message.getAuthor())){
@@ -46,15 +46,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
                 codeString = rawMessage.substring(5).trim();
             }
             try {
-                RayscodeLexer lexer = new RayscodeLexer(new StringReader(codeString));
-                List<RayscodeFunctionMetadata> functionCode = new ArrayList<>();
-                RayscodeFunctionMetadata code;
-                while ((code = lexer.nextToken()) != null) {
-                    functionCode.add(code);
-                }
-                RayscodeEvaluator eval = new RayscodeEvaluator();
-                Deque<BigInteger> endStack = eval.evaluate(functionCode);
-                channel.sendMessage("End Result: ```" + endStack.toString() + "```").queue();
+                evaluate(new RayscodeEvaluator(compile(codeString)), channel);
             } catch (IOException ex){
                 channel.sendMessage("Whoops I ran into an error. I've written it in the console.").queue();
                 ex.printStackTrace();
@@ -62,8 +54,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
                 channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ". I've written more info in the console.").queue();
                 ex.printStackTrace();
             }
-        }
-        else if(rawMessage.startsWith("!store")) {
+        } else if(rawMessage.startsWith("!store")) {
             if(rawMessage.length() == 6){
                 if(!cacheToStore.containsKey(message.getAuthor())){
                     channel.sendMessage("You have no code stored.").queue();
@@ -81,28 +72,47 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
                 cacheToStore.computeIfAbsent(message.getAuthor(), u -> new StringBuilder()).append(rawMessage).append(" ");
                 channel.sendMessage("I stored this code for later evaluation. You can add more to this code using the same command.").queue();
             }
-        }
-        else if(rawMessage.equals("!clean")) {
+        } else if(rawMessage.equals("!clean")) {
             if(cacheToStore.containsKey(message.getAuthor())){
                 cacheToStore.remove(message.getAuthor());
                 channel.sendMessage("Alright, I deleted everything you had stored.").queue();
             } else {
                 channel.sendMessage("You don't have anything stored.").queue();
             }
-        }
-        /*
-        else if(rawMessage.startsWith("!help")) {
-            String[] helpStringArray = rawMessage.split("//s+", 1);
-            if(helpStringArray.length == 1){
-                channel.sendMessage("To ask for help, use !help, followed by the command you want help for.").queue();
-            } else {
-                switch(helpStringArray[1]){
-                    case "eval": channel.sendMessage("I can evaluate some rayscode for you. ")
-                    default: channel.sendMessage("I can't help with that, unfortunately.").queue();
-                }
-            }
-        } */else if(rawMessage.startsWith("!")){
+        } else if(rawMessage.startsWith("!")){
             channel.sendMessage("I don't recognize that command").queue();
+        } else if(!Objects.equals(message.getAuthor(), me) && !pausedEvaluators.isEmpty()){
+            RayscodeEvaluator eval = pausedEvaluators.remove();
+            eval.setInputString(rawMessage);
+            eval.setPaused(false);
+            evaluate(eval, channel);
+        } else if(rawMessage.startsWith("!")){
+            channel.sendMessage("I don't recognize that command").queue();
+        }
+    }
+
+    private List<RayscodeFunctionMetadata> compile(String codeString) throws IOException{
+        RayscodeLexer lexer = new RayscodeLexer(new StringReader(codeString));
+        List<RayscodeFunctionMetadata> functionCode = new ArrayList<>();
+        RayscodeFunctionMetadata code;
+        while ((code = lexer.nextToken()) != null) {
+            functionCode.add(code);
+        }
+
+        return functionCode;
+    }
+
+    private void evaluate(RayscodeEvaluator eval, MessageChannel channel){
+        Deque<BigInteger> endStack = eval.evaluate();
+        if(eval.isPaused()){
+            pausedEvaluators.add(eval);
+            channel.sendMessage("Waiting for input...").queue();
+        } else {
+            if(eval.getOutputString() == null) {
+                channel.sendMessage("End Result: ```" + endStack.toString() + "```").queue();
+            } else {
+                channel.sendMessage("End Result: " + eval.getOutputString()).queue();
+            }
         }
     }
 }

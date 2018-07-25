@@ -14,13 +14,20 @@ public class RayscodeEvaluator {
 
     private Map<String, BigInteger> variables;
     private Map<String, RayscodeFunctionMetadata> methods;
-    private boolean definingMethod = false;
     private Deque<BigInteger> stack;
 
-    public RayscodeEvaluator() {
+    private boolean paused;
+    private String inputString;
+    private StringBuilder outputString;
+
+    private EvaluatorIterator<RayscodeFunctionMetadata> iterator;
+
+    public RayscodeEvaluator(List<RayscodeFunctionMetadata> code) {
         variables = new HashMap<>();
         stack = new LinkedList<>();
         methods = new HashMap<>();
+        this.iterator = new EvaluatorIterator<>(code);
+        this.outputString = new StringBuilder();
     }
 
     /**
@@ -30,8 +37,8 @@ public class RayscodeEvaluator {
      * @param numberOfParameters The number of parameters to preserve.
      * @return An evaluator based off this one.
      */
-    public RayscodeEvaluator createNewEvaluator(int numberOfParameters){
-        RayscodeEvaluator newEvaluator = new RayscodeEvaluator();
+    public RayscodeEvaluator createNewEvaluator(int numberOfParameters, List<RayscodeFunctionMetadata> code){
+        RayscodeEvaluator newEvaluator = new RayscodeEvaluator(code);
         Stream.iterate(0, i -> i + 1).limit(numberOfParameters).forEach(i -> newEvaluator.stack.push(stack.pop()));
         newEvaluator.variables = new HashMap<>(variables);
         newEvaluator.methods = new HashMap<>(methods);
@@ -40,12 +47,10 @@ public class RayscodeEvaluator {
 
     /**
      * Evaluate a line of code.
-     * @param code The code to evaluate
      * @return The final value in the stack.
      */
-    public Deque<BigInteger> evaluate(List<RayscodeFunctionMetadata> code){
-        EvaluatorIterator<RayscodeFunctionMetadata> iterator = new EvaluatorIterator<>(code);
-        while(!iterator.isComplete()){
+    public Deque<BigInteger> evaluate(){
+        while(!iterator.isComplete() && !isPaused()){
             RayscodeFunctionMetadata metadata = iterator.get();
             RayscodeFunction funcToExecute;
             if(methods.containsKey(metadata.getId())){
@@ -54,7 +59,9 @@ public class RayscodeEvaluator {
                 funcToExecute = metadata.getFunction();
             }
             funcToExecute.execute(stack, iterator, this);
-            iterator.advance();
+            if(!isPaused()) {
+                iterator.advance();
+            }
         }
         return stack;
     }
@@ -89,15 +96,31 @@ public class RayscodeEvaluator {
         methods.put(method, function);
     }
 
-    public void setDefiningMethod(boolean val){
-        definingMethod = val;
-    }
-
-    public boolean getDefiningMethod(){
-        return definingMethod;
-    }
-
     public String getVars(){
         return variables.toString();
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    public String getOutputString() {
+        return outputString.toString();
+    }
+
+    public void addOutputString(char outputString) {
+        this.outputString.append(outputString);
+    }
+
+    public String getInputString() {
+        return inputString;
+    }
+
+    public void setInputString(String inputString) {
+        this.inputString = inputString;
     }
 }

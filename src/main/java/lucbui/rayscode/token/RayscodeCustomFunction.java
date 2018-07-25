@@ -27,8 +27,8 @@ public class RayscodeCustomFunction implements RayscodeFunction{
 
     @Override
     public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
-        RayscodeEvaluator functionEvaluator = evaluator.createNewEvaluator(this.numberOfParameters);
-        Deque<BigInteger> returnStack = functionEvaluator.evaluate(functionDefinition);
+        RayscodeEvaluator functionEvaluator = evaluator.createNewEvaluator(this.numberOfParameters, functionDefinition);
+        Deque<BigInteger> returnStack = functionEvaluator.evaluate();
         while(!returnStack.isEmpty()){
             stack.push(returnStack.pop());
         }

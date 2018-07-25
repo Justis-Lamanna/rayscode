@@ -116,16 +116,15 @@ public enum Rayscode implements RayscodeFunction {
     INPUT() {
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
-            /*System.out.print(">> ");
-
-            Scanner inputScanner = new Scanner(System.in);
-            String s = inputScanner.nextLine();
-            inputScanner.close();
-
-            iterate(s.length())
-                    .map(i -> BigInteger.valueOf(i < s.length() ? s.charAt(i) : 0))
-                    .forEach(stack::push);*/
-            throw new IllegalArgumentException("Not implemented for Discord yet");
+            if(evaluator.getInputString() == null){
+                evaluator.setPaused(true);
+            } else {
+                String s = evaluator.getInputString();
+                evaluator.setInputString(null);
+                iterate(s.length())
+                        .map(i -> BigInteger.valueOf(i < s.length() ? s.charAt(i) : 0))
+                        .forEach(stack::push);
+            }
         }
     },
     /**
@@ -135,10 +134,7 @@ public enum Rayscode implements RayscodeFunction {
     OUTPUT() {
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
-            /*System.out.print((char) stack.pop().intValueExact());
-            System.out.println();
-            */
-            throw new IllegalArgumentException("Not implemented for Discord yet");
+           evaluator.addOutputString((char) stack.pop().intValueExact());
         }
     },
     /**
