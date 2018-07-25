@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * A testing ground for current features.
  */
-public class Main {
+public class EvaluatorMain {
 
     public static void main(String... args) throws IOException {
         //Example code, which defines method raysSquare, and applies it to the number 3.

@@ -59,32 +59,32 @@ VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
 
 <YYINITIAL> {
     //Literals are straightforward to parse.
-    "rays2"                         {return code(yytext(), Rayscode.TWO);}
-    "rays3"                         {return code(yytext(), Rayscode.THREE);}
-    "rays3c"                        {return code(yytext(), Rayscode.SIZE);}
-    "raysP"                         {return code(yytext(), Rayscode.ADD);}
-    "raysI"                         {return code(yytext(), Rayscode.SUBTRACT);}
-    "raysB"                         {return code(yytext(), Rayscode.MULTIPLY);}
-    "raysA"                         {return code(yytext(), Rayscode.DIVIDE);}
-    "raysLick"                      {return code(yytext(), Rayscode.INPUT);}
-    "raysQ"                         {return code(yytext(), Rayscode.OUTPUT);}
-    "raysShock"                     {return code(yytext(), Rayscode.SWAP);}
-    "raysD"                         {return code(yytext(), Rayscode.POP);}
-    "raysThump"                     {return code(yytext(), Rayscode.ROLL);}
-    "raysE"                         {return code(yytext(), Rayscode.DUPLICATE);}
-    "raysLove"                      {return code(Rayscode.ASSIGNMENT);}
+    "rays2"|":rays2:"                         {return code(yytext(), Rayscode.TWO);}
+    "rays3"|":rays3:"                        {return code(yytext(), Rayscode.THREE);}
+    "rays3c"|":rays3c:"                        {return code(yytext(), Rayscode.SIZE);}
+    "raysP"|":raysP:"                         {return code(yytext(), Rayscode.ADD);}
+    "raysI"|":raysI:"                         {return code(yytext(), Rayscode.SUBTRACT);}
+    "raysB"|":raysB:"                         {return code(yytext(), Rayscode.MULTIPLY);}
+    "raysA"|":raysA:"                         {return code(yytext(), Rayscode.DIVIDE);}
+    "raysLick"|":raysLick:"                      {return code(yytext(), Rayscode.INPUT);}
+    "raysQ"|":raysQ:"                         {return code(yytext(), Rayscode.OUTPUT);}
+    "raysShock"|":raysShock:"                     {return code(yytext(), Rayscode.SWAP);}
+    "raysD"|":raysD:"                         {return code(yytext(), Rayscode.POP);}
+    "raysThump"|":raysThump:"                     {return code(yytext(), Rayscode.ROLL);}
+    "raysE"|":raysE:"                         {return code(yytext(), Rayscode.DUPLICATE);}
+    "raysLove"|":raysLove:"                      {return code(Rayscode.ASSIGNMENT);}
     //Control structures
-    "raysC"                         {String id = loopHighestId.toString(); loopHighestId = loopHighestId.add(BigInteger.ONE); loopId.push(id); return code(id, Rayscode.STARTLOOP);}
-    "raysLurk"                      {return code(loopId.pop(), Rayscode.ENDLOOP);}
-    "raysShrug"                     {String id = ifElseHighestId.toString(); ifElseHighestId = ifElseHighestId.add(BigInteger.ONE); ifElseId.push(id); return code(id, Rayscode.IF);}
-    "raysT"                         {return code(ifElseId.peek(), Rayscode.ELSE);}
-    "raysFox"                       {return code(ifElseId.pop(), Rayscode.ENDIF);}
+    "raysC"|":raysC:"                         {String id = loopHighestId.toString(); loopHighestId = loopHighestId.add(BigInteger.ONE); loopId.push(id); return code(id, Rayscode.STARTLOOP);}
+    "raysLurk"|":raysLurk:"                      {return code(loopId.pop(), Rayscode.ENDLOOP);}
+    "raysShrug"|":raysShrug:"                     {String id = ifElseHighestId.toString(); ifElseHighestId = ifElseHighestId.add(BigInteger.ONE); ifElseId.push(id); return code(id, Rayscode.IF);}
+    "raysT"|":raysT:"                         {return code(ifElseId.peek(), Rayscode.ELSE);}
+    "raysFox"|":raysFox:"                       {return code(ifElseId.pop(), Rayscode.ENDIF);}
     //Method Declaration
-    "raysH"                         {yybegin(FUNC); return code(Rayscode.STARTFUNC);}
-    "raysShy"                       {return code(Rayscode.PARAM);}
-    "raysZ"                         {return code(Rayscode.ENDFUNC);}
+    "raysH"|":raysH:"                         {yybegin(FUNC); return code(Rayscode.STARTFUNC);}
+    "raysShy"|":raysShy:"                       {return code(Rayscode.PARAM);}
+    "raysZ"|":raysZ:"                         {return code(Rayscode.ENDFUNC);}
     //Reserved Foxs
-    "raysL"                         {error(yytext());}
+    "raysL"|":raysL:"                         {error(yytext());}
 }
 
 <FUNC>{
