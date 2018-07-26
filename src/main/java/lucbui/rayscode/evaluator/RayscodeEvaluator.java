@@ -5,6 +5,7 @@ import lucbui.rayscode.token.RayscodeFunctionMetadata;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -21,6 +22,8 @@ public class RayscodeEvaluator {
     private StringBuilder outputString;
 
     private EvaluatorIterator<RayscodeFunctionMetadata> iterator;
+    private boolean debug;
+    private Consumer<String> outputMethod;
 
     public RayscodeEvaluator(List<RayscodeFunctionMetadata> code) {
         variables = new HashMap<>();
@@ -28,6 +31,14 @@ public class RayscodeEvaluator {
         methods = new HashMap<>();
         this.iterator = new EvaluatorIterator<>(code);
         this.outputString = new StringBuilder();
+    }
+
+    public void setDebug(boolean debug){
+        this.debug = debug;
+    }
+
+    public void setOutputMethod(Consumer<String> method){
+        this.outputMethod = method;
     }
 
     /**
@@ -50,6 +61,7 @@ public class RayscodeEvaluator {
      * @return The final value in the stack.
      */
     public Deque<BigInteger> evaluate(){
+        StringBuilder debugString = new StringBuilder();
         while(!iterator.isComplete() && !isPaused()){
             RayscodeFunctionMetadata metadata = iterator.get();
             RayscodeFunction funcToExecute;
@@ -62,6 +74,22 @@ public class RayscodeEvaluator {
             if(!isPaused()) {
                 iterator.advance();
             }
+            if(debug && outputMethod != null){
+                debugString.append("Command: ")
+                        .append(funcToExecute.toString())
+                        .append(" Stack: ")
+                        .append(stack.toString())
+                        .append(" Output: ")
+                        .append(outputString.toString())
+                        .append("\n");
+                if(debugString.length() > 1000){
+                    outputMethod.accept(debugString.toString().trim());
+                    debugString.setLength(0);
+                }
+            }
+        }
+        if(debugString.length() > 0){
+            outputMethod.accept(debugString.toString().trim());
         }
         return stack;
     }
