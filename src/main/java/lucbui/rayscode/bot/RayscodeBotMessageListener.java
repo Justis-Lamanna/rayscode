@@ -28,11 +28,16 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
     public static final String PREFIX = "!";
 
     private enum Command {
-        EVAL("eval", (evt, msg) -> evaluateCacheCode(evt, msg, false), (evt, msg) -> evaluateMessageCode(evt, msg, false), ""),
-        DEBUG("debug", (evt, msg) -> evaluateCacheCode(evt, msg, true), (evt, msg) -> evaluateMessageCode(evt, msg, true), ""),
-        STORE("store", RayscodeBotMessageListener::sendStoreToUser, RayscodeBotMessageListener::addToStore, ""),
-        CLEAN("clean", RayscodeBotMessageListener::cleanCache, RayscodeBotMessageListener::cleanCache, ""),
-        HELP("help", RayscodeBotMessageListener::displayHelpHelp, RayscodeBotMessageListener::displayCommandHelp, "");
+        EVAL("eval", (evt, msg) -> evaluateCacheCode(evt, msg, false), (evt, msg) -> evaluateMessageCode(evt, msg, false),
+                "Evaluates a piece of raysCode. If there are no arguments, the code in your cache is executed as raysCode."),
+        DEBUG("debug", (evt, msg) -> evaluateCacheCode(evt, msg, true), (evt, msg) -> evaluateMessageCode(evt, msg, true),
+                "Debugs a piece of raysCode. Every step of evaluation is DM'ed to you. If there are no arguments, the code in your cache is executed as raysCode"),
+        STORE("store", RayscodeBotMessageListener::sendStoreToUser, RayscodeBotMessageListener::addToStore,
+                "If there are no arguments, the contents of your cache are DM'ed to you. Otherwise, whatever you type is stored in your cache."),
+        CLEAN("clean", RayscodeBotMessageListener::cleanCache, RayscodeBotMessageListener::cleanCache,
+                "Deletes everything in your cache."),
+        HELP("help", RayscodeBotMessageListener::displayHelpHelp, RayscodeBotMessageListener::displayCommandHelp,
+                "Use !help followed by a command to get information on that command.");
 
         List<String> commands;
         BiConsumer<MessageReceivedEvent, Message> noAfter;
@@ -143,7 +148,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
             try {
                 RayscodeEvaluator eval = new RayscodeEvaluator(compile(codeString));
                 eval.setDebug(debug);
-                eval.setOutputMethod(str -> channel.sendMessage(str).queue());
+                eval.setOutputMethod(str -> message.getAuthor().openPrivateChannel().complete().sendMessage(str).queue());
                 evaluate(eval, channel);
             } catch (IOException ex){
                 channel.sendMessage("Whoops I ran into an error. I've written it in the console.").queue();
@@ -165,7 +170,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         try {
             RayscodeEvaluator eval = new RayscodeEvaluator(compile(codeString));
             eval.setDebug(debug);
-            eval.setOutputMethod(str -> channel.sendMessage(str).queue());
+            eval.setOutputMethod(str -> message.getAuthor().openPrivateChannel().complete().sendMessage(str).queue());
             evaluate(eval, channel);
         } catch (IOException ex){
             channel.sendMessage("Whoops I ran into an error. I've written it in the console.").queue();
@@ -217,7 +222,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
 
     private static void displayCommandHelp(MessageReceivedEvent event, Message message) {
         MessageChannel channel = event.getChannel();
-        String rawMessage = message.getContentDisplay().split("\\s+", 1)[1];
+        String rawMessage = message.getContentDisplay().split("\\s+", 2)[1];
 
         Optional<Command> match = Arrays.stream(Command.values())
                 .filter(cmd -> cmd.getCommands().stream().anyMatch(i -> Objects.equals(i, rawMessage)))
