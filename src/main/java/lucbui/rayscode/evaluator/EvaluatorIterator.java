@@ -112,4 +112,8 @@ public class EvaluatorIterator<T> {
     public boolean isComplete(){
         return currentIndex >= list.size();
     }
+
+    public int getCurrentIndex(){
+        return currentIndex;
+    }
 }

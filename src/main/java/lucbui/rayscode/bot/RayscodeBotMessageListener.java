@@ -78,10 +78,6 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         //To check if I am the source of the message.
         User me = event.getJDA().getSelfUser();
 
-        if(!event.isFromType(ChannelType.TEXT)){
-            return; //Ignore DMs and other messages for now.
-        }
-
         if(message.getMentionedUsers().stream()
                 .anyMatch(user -> Objects.equals(user, me))) {
             channel.sendMessage("Hi! To use me, begin a message with !eval and follow it with your raysCode!\n\nThe raysCode specification can be found here: https://github.com/Justis-Lamanna/rayscode").queue();
@@ -105,9 +101,9 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
             //They're trying to use an unknown command
             channel.sendMessage("I don't recognize that command").queue();
         } else {
-            int rnd = (int)(Math.random() * 6);
+            int rnd = (int)(Math.random() * 10);
             if(rnd == 0){
-                message.addReaction(":heart:").queue();
+                message.addReaction(event.getJDA().getEmoteById(472193536524025866L)).queue();
             }
         }
     }
@@ -153,6 +149,8 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
             } catch (IOException ex){
                 channel.sendMessage("Whoops I ran into an error. I've written it in the console.").queue();
                 ex.printStackTrace();
+            } catch (IllegalArgumentException ex){
+                channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ".").queue();
             } catch (Throwable ex){
                 channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ". I've written more info in the console.").queue();
                 ex.printStackTrace();
@@ -175,6 +173,8 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         } catch (IOException ex){
             channel.sendMessage("Whoops I ran into an error. I've written it in the console.").queue();
             ex.printStackTrace();
+        } catch (IllegalArgumentException ex){
+            channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ".").queue();
         } catch (Throwable ex){
             channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ". I've written more info in the console.").queue();
             ex.printStackTrace();
@@ -231,7 +231,17 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         if(match.isPresent()){
             event.getChannel().sendMessage("Usage for " + match.get().toString().toLowerCase() + ":```" + match.get().getHelp() + "```").queue();
         } else {
-            event.getChannel().sendMessage("I don't have help for that command.").queue();
+            //Ugh this is awful
+            try {
+                RayscodeLexer lexer = new RayscodeLexer(new StringReader(rawMessage));
+                RayscodeFunctionMetadata token = lexer.nextToken();
+                event.getChannel().sendMessage("Usage for " + token.getFunction() + ":```" + token.getFunction().getHelp() + "```").queue();
+            } catch (IOException ex) {
+                channel.sendMessage("Whoops I ran into an error. I've written it in the console.").queue();
+                ex.printStackTrace();
+            } catch (Throwable ex) {
+                event.getChannel().sendMessage("I don't have help for that command.").queue();
+            }
         }
     }
 }

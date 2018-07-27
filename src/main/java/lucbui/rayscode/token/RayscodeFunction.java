@@ -27,4 +27,23 @@ public interface RayscodeFunction {
     default boolean requiresId(){
         return false;
     }
+
+    /**
+     * Get the help text for this function.
+     * @return Help text.
+     */
+    String getHelp();
+
+    /**
+     * Checks if there's enough arguments for a function.
+     * @param stack The stack to check.
+     * @param numberOfArgs The number of arguments needed.
+     */
+    static void requiresArguments(Deque<?> stack, int numberOfArgs, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator eval){
+        if(stack.size() < numberOfArgs){
+            throw new IllegalArgumentException(
+                    iterator.get().getFunction() + " at location " + (iterator.getCurrentIndex() + 1) +
+                            " requires " + numberOfArgs + " arguments, but stack is of size " + stack.size());
+        }
+    }
 }

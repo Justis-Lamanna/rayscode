@@ -40,7 +40,14 @@ public class RayscodeCustomFunction implements RayscodeFunction{
     }
 
     @Override
+    public String getHelp() {
+        return "A custom method.";
+    }
+
+    @Override
     public String toString(){
         return numberOfParameters + "=>" + functionDefinition.toString();
     }
+
+
 }
