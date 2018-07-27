@@ -406,16 +406,13 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             String id = iterator.get().getId();
-            boolean isSafeLoop = false;
-            while(iterator.get().getFunction() != Rayscode.STARTLOOP || !Objects.equals(iterator.get().getId(), id)){
-                if(iterator.get().getFunction() == Rayscode.IF){
-                    isSafeLoop = true;
-                }
-                iterator.advance(-1);
-            }
+            //We need to check for loop safety, to minimize the possibility of infinite loops.
+            boolean isSafeLoop = checkForSafeLoop(stack, iterator, evaluator);
             if(!isSafeLoop){
                 throw new IllegalArgumentException("Infinite loop condition detected");
             }
+
+            iterator.advanceBackTo(i -> i.getFunction() == STARTLOOP && i.getId().equals(id));
         }
 
         @Override
@@ -490,6 +487,37 @@ public enum Rayscode implements RayscodeFunction {
             return "Marks the end of function declaration.";
         }
     };
+
+    private static boolean checkForSafeLoop(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
+        //We can check the safety of a loop, by seeing if the current point is inside of an if-loop.
+        //We do this by moving backwards. If we encounter an ENDIF, we push to the stack. If we encounter an IF, we pop.
+        //If we run out of IDs to pop, we must be in an IF loop:
+        // [STARTLOOP] IF ... ELSE [ENDLOOP] ENDIF => Hits an IF before encountering an ENDIF, inside a conditional.
+        // [STARTLOOP] IF ... ELSE ... ENDIF [ENDLOOP] => Hits an ENDIF followed by an IF, so it was outside of the block.
+        // [STARTLOOP] ... [ENDLOOP] => Never hits an IF, so it is an invalid loop.
+        // IF [STARTLOOP] ELSE [ENDLOOP] ENDIF => Never hits an IF, so it is an invalid loop.
+
+        // We can also test to make sure some sort of "work" is being done between the two loops.
+        int numberOfEncounteredIds = 0;
+        String currentId = iterator.get().getId();
+        int start = -1;
+        boolean safeLoop = false;
+        while(iterator.canGetRelative(start) && !(iterator.getRelative(start).getFunction() == STARTLOOP && Objects.equals(iterator.getRelative(start).getId(), currentId))){
+            RayscodeFunctionMetadata functionToCheck = iterator.getRelative(start);
+            if(functionToCheck.getFunction() == ENDIF){
+                numberOfEncounteredIds++;
+            } else if(functionToCheck.getFunction() == IF){
+                if(numberOfEncounteredIds == 0) {
+                    safeLoop = true;
+                    break;
+                } else {
+                    numberOfEncounteredIds--;
+                }
+            }
+            start--;
+        }
+        return safeLoop;
+    }
 
     /**
      * Helper limit to create a stream for-loop.

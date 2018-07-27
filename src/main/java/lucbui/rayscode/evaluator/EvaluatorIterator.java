@@ -44,6 +44,15 @@ public class EvaluatorIterator<T> {
     }
 
     /**
+     * Checks if the user can get the relative value.
+     * @param idx The relative distance away from the current index to search.
+     * @return True if that relative distance is legal.
+     */
+    public boolean canGetRelative(int idx){
+        return currentIndex + idx >= 0 && currentIndex + idx < list.size();
+    }
+
+    /**
      * Get the value relative to the current pointer.
      * @param idx The number of spaces ahead to retrieve. Negative goes backwards.
      * @return

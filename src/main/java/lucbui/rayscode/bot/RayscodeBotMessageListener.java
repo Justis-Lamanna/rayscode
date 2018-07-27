@@ -100,11 +100,6 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         } else if(rawMessage.startsWith(PREFIX)){
             //They're trying to use an unknown command
             channel.sendMessage("I don't recognize that command").queue();
-        } else {
-            int rnd = (int)(Math.random() * 10);
-            if(rnd == 0){
-                message.addReaction(event.getJDA().getEmoteById(472193536524025866L)).queue();
-            }
         }
     }
 

@@ -13,6 +13,8 @@ import java.util.stream.Stream;
  */
 public class RayscodeEvaluator {
 
+    public static int MAX_STACK_SIZE = 2000;
+
     private Map<String, BigInteger> variables;
     private Map<String, RayscodeFunctionMetadata> methods;
     private Deque<BigInteger> stack;
@@ -73,6 +75,10 @@ public class RayscodeEvaluator {
             funcToExecute.execute(stack, iterator, this);
             if(!isPaused()) {
                 iterator.advance();
+            }
+            //Limit the stack size so people can't effectively DOS my machine.
+            if(stack.size() > MAX_STACK_SIZE){
+                throw new IllegalStateException("Stack is too large, must be less than " + MAX_STACK_SIZE + " elements.");
             }
             if(debug && outputMethod != null){
                 debugString.append("Command: ")
