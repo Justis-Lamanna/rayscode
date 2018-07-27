@@ -29,6 +29,16 @@ public enum Rayscode implements RayscodeFunction {
         public String getHelp() {
             return "Pushes the literal number 2 onto the stack.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
+        }
     },
     /**
      * A literal three, which places a 3 on the stack.
@@ -46,6 +56,16 @@ public enum Rayscode implements RayscodeFunction {
         public String getHelp() {
             return "Pushes the literal number 3 onto the stack.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
+        }
     },
     /**
      * Get the current stack size.
@@ -59,6 +79,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Pushes the current size of the stack onto the stack. This does not include the call to this function itself.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
         }
     },
     /**
@@ -89,6 +119,16 @@ public enum Rayscode implements RayscodeFunction {
         public String getHelp() {
             return "Pushes the value of a variable, or the result of a method, onto the stack.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
+        }
     },
     /**
      * An add operator, which pops twice and pushes their sum
@@ -104,6 +144,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Pops the top two numbers off the stack, adds them together, and pushes the result onto the stack.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 2;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
         }
     },
     /**
@@ -121,6 +171,16 @@ public enum Rayscode implements RayscodeFunction {
         public String getHelp() {
             return "Pops the top two numbers off the stack, subtracts the second from the first, and pushes the result onto the stack.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 2;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
+        }
     },
     /**
      * A multiplication operator, which pops twice and pushes their product
@@ -137,6 +197,16 @@ public enum Rayscode implements RayscodeFunction {
         public String getHelp() {
             return "Pops the top two numbers off the stack, multiplies them together, and pushes the result onto the stack.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 2;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
+        }
     },
     /**
      * A division operator, which pops twice and pushes their quotient
@@ -152,6 +222,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Pops the top two numbers off the stack, divides the second by the first, and pushes the result onto the stack. If the result is a decimal, the decimal portion is cut off.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 2;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
         }
     },
     /**
@@ -175,6 +255,16 @@ public enum Rayscode implements RayscodeFunction {
         public String getHelp() {
             return "Waits for a message to be entered by someone. Once a message is sent, the letters are converted into their ASCII numbers, and stored on the stack. The first letter is placed at the bottom of the stack.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 100_000; //Absurdly large number to indicate a variable number of returns.
+        }
     },
     /**
      * An output operator, which prints out the top-most value in the stack as an ASCII character.
@@ -190,6 +280,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Pops the top number off the stack, converts it to an ASCII character, and outputs it. No output occurs until code execution is complete.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 1;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
         }
     },
     /**
@@ -210,6 +310,15 @@ public enum Rayscode implements RayscodeFunction {
             return "Pops the top two numbers off the stack, swaps them, and pushes them back, so the top becomes the second-to-the-top, and vice versa.";
         }
 
+        @Override
+        public int getNumberOfArguments() {
+            return 2;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 2;
+        }
     },
     /**
      * A pop operator, which removes the top-most element from the stack.
@@ -224,6 +333,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Pops the top number off the stack, and forgets it forever.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 1;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
         }
     },
     /**
@@ -242,6 +361,16 @@ public enum Rayscode implements RayscodeFunction {
         public String getHelp() {
             return "Duplicates the top-most number on the stack.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 1;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 2;
+        }
     },
     /**
      * Moves the top-most element to the bottom of the stack.
@@ -256,6 +385,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Pops the top-most number on the stack, and places it at the bottom of the stack.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 1;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 1;
         }
     },
     /**
@@ -274,6 +413,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Stores the top-most value in a variable. The variable name must start with 'rays', followed by a capital letter or a number.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
         }
     },
     /**
@@ -311,6 +460,16 @@ public enum Rayscode implements RayscodeFunction {
                     "if the top of the stack is less than or equal to zero, or the stack is empty, Expression 1 is executed. Otherwise, Expression 2" +
                     "is executed. Expression 1 or Expression 2 may be omitted if unnecessary, but the raysT and raysFox must always be present.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
+        }
     },
     /**
      * Begins an ELSE block.
@@ -341,6 +500,16 @@ public enum Rayscode implements RayscodeFunction {
         public boolean requiresId(){
             return true;
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
+        }
     },
     /**
      * Ends the IF-ELSE block.
@@ -363,6 +532,16 @@ public enum Rayscode implements RayscodeFunction {
                     "if the top of the stack is less than or equal to zero, or the stack is empty, Expression 1 is executed. Otherwise, Expression 2" +
                     "is executed. Expression 1 or Expression 2 may be omitted if unnecessary, but the raysT and raysFox must always be present.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
+        }
     },
     METHOD(){
         @Override
@@ -378,6 +557,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Marks a method declaration.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
         }
     },
     /**
@@ -397,6 +586,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Marks the beginning of a loop. A subsequent call to raysLurk will return execution to this point.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
         }
     },
     /**
@@ -423,6 +622,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Marks the end of a loop. A subsequent call to raysLurk will return execution to its corresponding raysC.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
         }
     },
     STARTFUNC(){
@@ -464,6 +673,16 @@ public enum Rayscode implements RayscodeFunction {
                     "the number of parameters to pass to the stack. For example, if there are three raysShy, then the function will be" +
                     "initialized with three values in its stack. Whatever is left on the stack when the function completes is returned.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
+        }
     },
     PARAM(){
         @Override
@@ -475,6 +694,16 @@ public enum Rayscode implements RayscodeFunction {
         public String getHelp() {
             return "Marks a parameter. The number of raysShy's is equal to the number of parameters to pass to a function.";
         }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
+        }
     },
     ENDFUNC(){
         @Override
@@ -485,6 +714,16 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public String getHelp() {
             return "Marks the end of function declaration.";
+        }
+
+        @Override
+        public int getNumberOfArguments() {
+            return 0;
+        }
+
+        @Override
+        public int getNumberOfReturns() {
+            return 0;
         }
     };
 
@@ -516,7 +755,25 @@ public enum Rayscode implements RayscodeFunction {
             }
             start--;
         }
-        return safeLoop;
+        //If something is being created or destroyed, we should be alright. Only when nothing is happening should we worry.
+        return safeLoop && calculateWork(stack, iterator, evaluator) != 0;
+    }
+
+    //Calculate the amount of work being done
+    //NOTE: This doesn't take into account if-else loops, so it doesn't give a completely accurate number.
+    //It will *definitely* tell you if nothing is happening though.
+    private static int calculateWork(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator){
+        int workSum = 0;
+        String currentId = iterator.get().getId();
+        int start = -1;
+        while(iterator.canGetRelative(start) && !(iterator.getRelative(start).getFunction() == STARTLOOP && Objects.equals(iterator.getRelative(start).getId(), currentId))){
+            RayscodeFunctionMetadata functionToCheck = iterator.getRelative(start);
+            //The total amount of "work" this function does. >0 means things are being made, <0 means things are being destroyed.
+            int work = functionToCheck.getFunction().getNumberOfReturns() - functionToCheck.getFunction().getNumberOfArguments();
+            workSum += work;
+            start--;
+        }
+        return workSum;
     }
 
     /**

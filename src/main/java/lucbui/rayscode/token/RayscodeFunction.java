@@ -35,6 +35,18 @@ public interface RayscodeFunction {
     String getHelp();
 
     /**
+     * Get the number of arguments taken by this function.
+     * @return The number of arguments from the function.
+     */
+    int getNumberOfArguments();
+
+    /**
+     * Get the number of returns taken by this function.
+     * @return The number of arguments from the function.
+     */
+    int getNumberOfReturns();
+
+    /**
      * Checks if there's enough arguments for a function.
      * @param stack The stack to check.
      * @param numberOfArgs The number of arguments needed.
