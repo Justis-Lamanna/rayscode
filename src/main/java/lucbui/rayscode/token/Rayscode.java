@@ -406,11 +406,15 @@ public enum Rayscode implements RayscodeFunction {
         @Override
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             String id = iterator.get().getId();
-            //Jump to the STARTLOOP clause with the matching ID.
-            if(!iterator.advanceBackTo(
-                    i -> Objects.equals(i.getId(), id) &&
-                            (i.getFunction() == STARTLOOP))){
-                throw new IllegalArgumentException("No STARTLOOP clause for ID=" + id + " found.");
+            boolean isSafeLoop = false;
+            while(iterator.get().getFunction() != Rayscode.STARTLOOP || !Objects.equals(iterator.get().getId(), id)){
+                if(iterator.get().getFunction() == Rayscode.IF){
+                    isSafeLoop = true;
+                }
+                iterator.advance(-1);
+            }
+            if(!isSafeLoop){
+                throw new IllegalArgumentException("Infinite loop condition detected");
             }
         }
 
