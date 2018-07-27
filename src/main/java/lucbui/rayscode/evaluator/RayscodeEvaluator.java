@@ -162,4 +162,8 @@ public class RayscodeEvaluator {
     public void setInputString(String inputString) {
         this.inputString = inputString;
     }
+
+    public int getLength() {
+        return this.iterator.size();
+    }
 }

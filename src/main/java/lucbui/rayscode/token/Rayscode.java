@@ -606,13 +606,16 @@ public enum Rayscode implements RayscodeFunction {
         public void execute(Deque<BigInteger> stack, EvaluatorIterator<RayscodeFunctionMetadata> iterator, RayscodeEvaluator evaluator) {
             String id = iterator.get().getId();
             //We need to check for loop safety, to minimize the possibility of infinite loops.
-            /*
+
             boolean isSafeLoop = checkForSafeLoop(stack, iterator, evaluator);
             if(!isSafeLoop){
                 throw new IllegalArgumentException("Infinite loop condition detected");
-            }*/
+            }
 
-            iterator.advanceBackTo(i -> i.getFunction() == STARTLOOP && i.getId().equals(id));
+            boolean foundLoop = iterator.advanceBackTo(i -> i.getFunction() == STARTLOOP && i.getId().equals(id));
+            if(!foundLoop){
+                throw new IllegalArgumentException("Start of loop not found");
+            }
         }
 
         @Override

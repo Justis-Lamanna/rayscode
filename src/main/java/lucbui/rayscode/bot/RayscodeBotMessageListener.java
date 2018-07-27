@@ -126,6 +126,8 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
             //Print stack if no output string is specified, otherwise print the output string.
             if(eval.getOutputString() == null || eval.getOutputString().isEmpty()) {
                 channel.sendMessage("End Result: ```" + endStack.toString() + "```").queue();
+            } else if("Hello World".equalsIgnoreCase(eval.getOutputString())){
+                channel.sendMessage("End Result: " + eval.getOutputString() + ". Nice Hello World! You managed it in " + eval.getLength() + " opcodes.").queue();
             } else {
                 channel.sendMessage("End Result: " + eval.getOutputString()).queue();
             }

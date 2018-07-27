@@ -122,7 +122,19 @@ public class EvaluatorIterator<T> {
         return currentIndex >= list.size();
     }
 
+    /**
+     * Get the current index.
+     * @return Current index.
+     */
     public int getCurrentIndex(){
         return currentIndex;
+    }
+
+    /**
+     * Get the size of the backing list.
+     * @return The size of the backing list.
+     */
+    public int size() {
+        return list.size();
     }
 }
