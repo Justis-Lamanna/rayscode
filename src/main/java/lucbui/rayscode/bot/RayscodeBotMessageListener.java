@@ -144,7 +144,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
             } catch (IOException ex){
                 channel.sendMessage("Whoops I ran into an error. I've written it in the console.").queue();
                 ex.printStackTrace();
-            } catch (IllegalArgumentException ex){
+            } catch (IllegalArgumentException | IllegalStateException ex){
                 channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ".").queue();
             } catch (Throwable ex){
                 channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ". I've written more info in the console.").queue();
@@ -168,7 +168,7 @@ public class RayscodeBotMessageListener extends ListenerAdapter {
         } catch (IOException ex){
             channel.sendMessage("Whoops I ran into an error. I've written it in the console.").queue();
             ex.printStackTrace();
-        } catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException | IllegalStateException ex){
             channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ".").queue();
         } catch (Throwable ex){
             channel.sendMessage("Error encountered during parsing: " + ex.getLocalizedMessage() + ". I've written more info in the console.").queue();

@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 public class RayscodeEvaluator {
 
     public static int MAX_STACK_SIZE = 2000;
+    public static long MAX_TIME_OF_EVALUATION = 15 * 1000; //15 seconds, in milliseconds.
 
     private Map<String, BigInteger> variables;
     private Map<String, RayscodeFunctionMetadata> methods;
@@ -63,6 +64,7 @@ public class RayscodeEvaluator {
      * @return The final value in the stack.
      */
     public Deque<BigInteger> evaluate(){
+        long currentTime = System.currentTimeMillis();
         StringBuilder debugString = new StringBuilder();
         while(!iterator.isComplete() && !isPaused()){
             RayscodeFunctionMetadata metadata = iterator.get();
@@ -78,7 +80,10 @@ public class RayscodeEvaluator {
             }
             //Limit the stack size so people can't effectively DOS my machine.
             if(stack.size() > MAX_STACK_SIZE){
-                throw new IllegalStateException("Stack is too large, must be less than " + MAX_STACK_SIZE + " elements.");
+                throw new IllegalStateException("Stack is too large, must be less than " + MAX_STACK_SIZE + " elements");
+            }
+            if(System.currentTimeMillis() > currentTime + MAX_TIME_OF_EVALUATION){
+                throw new IllegalStateException("Code has been running for " + (MAX_TIME_OF_EVALUATION / 1000) + " seconds. Code has been terminated");
             }
             if(debug && outputMethod != null){
                 debugString.append("Command: ")
