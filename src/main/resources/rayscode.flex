@@ -35,7 +35,7 @@ import java.util.HashMap;
     }
 
     private void error(String text){
-        throw new Error("Reserved character " + text + " used");
+        throw new IllegalArgumentException("Reserved character " + text + " used");
     }
 %}
 
@@ -92,7 +92,7 @@ VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
 
     /* whitespace */
     {WhiteSpace}                    { /* ignore */ }
-}
+} 
 
 //Only in the last case should VarName be checked. 
 <YYINITIAL>{
@@ -104,5 +104,5 @@ VarName         = "rays" [A-Z0-9] [A-Za-z0-9]*
 }
 
 /* error fallback */
-[^]                              { throw new Error("Illegal character <"+
-                                                    yytext()+">"); }
+[\S]+                              { throw new IllegalArgumentException("Illegal character <"+
+                                                    yytext()+"> at position " + yycolumn); }
